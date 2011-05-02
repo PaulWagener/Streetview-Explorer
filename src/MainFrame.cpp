@@ -28,6 +28,8 @@ enum {
     TEXTBOX_PASTE_LINK
 };
 
+wxPanel *mainPanel;
+
 MainFrame::MainFrame()
 : wxFrame(NULL, wxID_ANY, "StreetView Explorer", wxDefaultPosition, wxSize(DEFAULT_WIDTH, DEFAULT_HEIGHT)),
 isStartingWithPanorama(false) {
@@ -42,6 +44,8 @@ isStartingWithPanorama(false) {
     wxMenuBar *menuBar = new wxMenuBar();
     menuBar->Append(fileMenu, "&File");
     SetMenuBar(menuBar);
+
+	mainPanel = new wxPanel(this);
 
     //Event handlers
     Connect(MENU_BACKTOMAIN, wxEVT_COMMAND_MENU_SELECTED, wxMenuEventHandler(MainFrame::OnGoToMainScreen));
@@ -64,7 +68,7 @@ isStartingWithPanorama(false) {
  * with an OpenGL window with the actual game.
  */
 void MainFrame::OnPanoramaStart(wxCommandEvent &event) {
-    glCanvas = new GLCanvas(this, (const char*)event.GetString());
+    glCanvas = new GLCanvas(mainPanel, (const char*)event.GetString());
     wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
     sizer->Add(glCanvas, 1, wxEXPAND);
     ReplaceSizer(sizer);
@@ -211,7 +215,7 @@ void MainFrame::ShowMain() {
     //Horizontally centered title image
     wxBoxSizer *titleSizer = new wxBoxSizer(wxHORIZONTAL);
     titleSizer->AddStretchSpacer(1);
-    titleSizer->Add(new wxStaticBitmap(this, wxID_ANY, wxBitmap("title.png", wxBITMAP_TYPE_PNG)));
+    titleSizer->Add(new wxStaticBitmap(mainPanel, wxID_ANY, wxBitmap("title.png", wxBITMAP_TYPE_PNG)));
     titleSizer->AddStretchSpacer(1);
     sizer->Add(titleSizer, 0, wxEXPAND);
 
@@ -219,23 +223,23 @@ void MainFrame::ShowMain() {
     sizer->AddSpacer(30);
 
     //Combobox
-    combobox = new wxChoice(this, COMBOBOX_LOCATIONS, wxDefaultPosition, wxSize(300, -1));
+    combobox = new wxChoice(mainPanel, COMBOBOX_LOCATIONS, wxDefaultPosition, wxSize(300, -1));
     sizer->Add(combobox, 0, wxALIGN_CENTER | wxALL, 5);
     RefillLocations();
 
     //Buttons
     wxBoxSizer *buttonsSizer = new wxBoxSizer(wxHORIZONTAL);
-    buttonsSizer->Add(new wxButton(this, BUTTON_EDIT_LOCATIONS, "Edit destinations"));
+    buttonsSizer->Add(new wxButton(mainPanel, BUTTON_EDIT_LOCATIONS, "Edit destinations"));
 
     if (strlen(settings.last_pano) > 0) {
         buttonsSizer->AddSpacer(40);
-        buttonsSizer->Add(new wxButton(this, BUTTON_LAST_LOCATION, "Go to last location"));
+        buttonsSizer->Add(new wxButton(mainPanel, BUTTON_LAST_LOCATION, "Go to last location"));
     }
     sizer->Add(buttonsSizer, 0, wxALIGN_CENTER | wxALL, 5);
 
     //TextCtrl user can paste in
     sizer->AddSpacer(50);
-    sizer->Add(new wxTextCtrl(this, TEXTBOX_PASTE_LINK, "Or paste a Google StreetView link here...", wxDefaultPosition, wxSize(400, 50), wxTE_CENTER), 0, wxALIGN_CENTER);
+    sizer->Add(new wxTextCtrl(mainPanel, TEXTBOX_PASTE_LINK, "Or paste a Google StreetView link here...", wxDefaultPosition, wxSize(400, 50), wxTE_CENTER), 0, wxALIGN_CENTER);
 
     //Space below
     sizer->AddStretchSpacer(1);
@@ -256,10 +260,10 @@ void MainFrame::ShowMain() {
  * @param sizer
  */
 void MainFrame::ReplaceSizer(wxSizer *sizer) {
-    wxSizer *oldsizer = GetSizer();
+    wxSizer *oldsizer = mainPanel->GetSizer();
     if (oldsizer != NULL) {
         oldsizer->Clear(true);
     }
-    this->SetSizer(sizer);
-    this->Layout();
+    mainPanel->SetSizer(sizer);
+    mainPanel->Layout();
 }

@@ -18,8 +18,6 @@
 #include "common.h"
 #include "Settings.h"
 #include <string>
-
-
 #include <locale.h>
 using namespace std;
 

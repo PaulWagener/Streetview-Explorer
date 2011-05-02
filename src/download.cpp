@@ -1,6 +1,3 @@
-#include <curl/curl.h>
-#include <curl/types.h>
-#include <curl/easy.h>
 #include <string>
 #include "download.h"
 
@@ -21,12 +18,15 @@ size_t write_download_data(void *ptr, size_t size, size_t nmemb, std::vector<uns
  * @param url
  * @return
  */
+
+#include <curl\curl.h>
 std::auto_ptr<std::vector<unsigned char> >
 download(const char *url) {
     printf("Downloading %s\n", url);
 
     std::auto_ptr<std::vector<unsigned char> > b(new std::vector<unsigned char>());
 
+	
     CURL *curl = curl_easy_init();
     curl_easy_setopt(curl, CURLOPT_URL, url);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_download_data);
@@ -45,6 +45,7 @@ download(const char *url) {
 
 #include <jpeglib.h>
 #include <jerror.h>
+
 /* Read JPEG image from a memory segment */
 static void init_source (j_decompress_ptr cinfo) {}
 static boolean fill_input_buffer (j_decompress_ptr cinfo)
@@ -92,7 +93,9 @@ struct image_block download_jpeg(const char *url) {
     
     const std::auto_ptr<std::vector<unsigned char> > jpeg_data = download(url);
 
+
     struct image_block image;
+	
 
     //Initialize jpeg decompression
     struct jpeg_decompress_struct info;

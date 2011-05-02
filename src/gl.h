@@ -1,6 +1,8 @@
 #ifdef __WXMAC__
 
 #include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#include <GLUT/glut.h>
 
 #else
 

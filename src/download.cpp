@@ -19,7 +19,7 @@ size_t write_download_data(void *ptr, size_t size, size_t nmemb, std::vector<uns
  * @return
  */
 
-#include <curl\curl.h>
+#include <curl/curl.h>
 std::auto_ptr<std::vector<unsigned char> >
 download(const char *url) {
     printf("Downloading %s\n", url);

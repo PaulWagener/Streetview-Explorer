@@ -182,7 +182,7 @@ void Player::drawPlayer(struct utmPosition reference) {
 
         //Head
         glTranslatef(0, 0, SHOULDER_HEIGHT / 2 + RAYMAN_LENGTH + HEAD_RADIUS);
-        glutSolidSphere(HEAD_RADIUS, 8, 8);
+        //glutSolidSphere(HEAD_RADIUS, 8, 8);
     }
     glPopMatrix();
 

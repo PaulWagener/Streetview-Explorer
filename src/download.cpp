@@ -45,7 +45,7 @@ download(const char *url) {
 
 #include <jpeglib.h>
 #include <jerror.h>
-
+#if 0
 /* Read JPEG image from a memory segment */
 static void init_source (j_decompress_ptr cinfo) {}
 static boolean fill_input_buffer (j_decompress_ptr cinfo)
@@ -82,8 +82,7 @@ static void jpeg_mem_src (j_decompress_ptr cinfo, void* buffer, long nbytes)
     src->bytes_in_buffer = nbytes;
     src->next_input_byte = (JOCTET*)buffer;
 }
-
-
+#endif
 /**
  * Downloads a jpeg from a url and returns it as raw RGB data in memory
  * @param url

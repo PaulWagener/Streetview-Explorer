@@ -60,7 +60,7 @@ void Explorer::init() {
  *
  */
 void Explorer::downloadThread() {
-    try {
+	try {
         Panorama *p = new Panorama(downloadPano, settings.zoomLevel);
         downloadedPano = p;
     } catch (const char* c) {

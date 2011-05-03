@@ -50,8 +50,6 @@ public:
 
 
     void OnTimer(wxTimerEvent& event);
-
-    DECLARE_EVENT_TABLE()
 };
 
 #endif	/* GLCANVAS_H */

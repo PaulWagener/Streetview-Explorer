@@ -38,12 +38,22 @@ explorer(pano_id) {
     
     capture = false;
     ignoreMouseEvents = false;
+
+	Connect(wxID_ANY, wxEVT_MOTION, wxMouseEventHandler(GLCanvas::mouseMoved));
+	Connect(wxID_ANY, wxEVT_LEFT_DOWN, wxMouseEventHandler(GLCanvas::mouseDown));
+
+	Connect(wxID_ANY, wxEVT_KEY_DOWN, wxKeyEventHandler(GLCanvas::keyDown));
+	Connect(wxID_ANY, wxEVT_KEY_UP, wxKeyEventHandler(GLCanvas::keyUp));
+	
+	Connect(wxID_ANY, wxEVT_PAINT, wxPaintEventHandler(GLCanvas::onPaint));
+	Connect(wxID_ANY, wxEVT_SIZE, wxSizeEventHandler(GLCanvas::OnResize));
+	Connect(wxID_ANY, wxEVT_TIMER, wxTimerEventHandler(GLCanvas::OnTimer));
+
+	this->SetFocus();
 }
 
 GLCanvas::~GLCanvas() {
     timer->Stop();
-    delete timer;
-    delete m_context;
 }
 
 /**
@@ -104,7 +114,7 @@ void GLCanvas::keyDown(wxKeyEvent& event) {
     if (event.m_keyCode == 'D') explorer.player.keys.strafe_right = true;
     if (event.m_keyCode == 'Q') explorer.player.keys.rotate_left = true;
     if (event.m_keyCode == 'E') explorer.player.keys.rotate_right = true;
-
+	
     if (event.m_keyCode == WXK_ESCAPE) {
         disableCapture();
     }
@@ -136,8 +146,6 @@ void GLCanvas::OnTimer(wxTimerEvent& event) {
     Refresh();
 }
 
-bool fffirst = true;
-
 void GLCanvas::onPaint(wxPaintEvent& evt) {
     if (!IsShown())
         return;
@@ -154,29 +162,7 @@ void GLCanvas::onPaint(wxPaintEvent& evt) {
         thread->Run();
     }
 
-    
-
-
-    if (fffirst) {
-        explorer.init();
-        
-
-        fffirst = false;
-    }
-
     wxSize size = GetSize();
     explorer.display(size.GetWidth(), size.GetHeight());
     SwapBuffers();
 }
-
-BEGIN_EVENT_TABLE(GLCanvas, wxGLCanvas)
-EVT_MOTION(GLCanvas::mouseMoved)
-EVT_LEFT_DOWN(GLCanvas::mouseDown)
-EVT_SIZE(GLCanvas::OnResize)
-EVT_KEY_DOWN(GLCanvas::keyDown)
-EVT_KEY_UP(GLCanvas::keyUp)
-EVT_MOUSEWHEEL(GLCanvas::mouseWheelMoved)
-EVT_PAINT(GLCanvas::onPaint)
-
-EVT_TIMER(wxID_ANY, GLCanvas::OnTimer)
-END_EVENT_TABLE()

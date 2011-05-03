@@ -1,0 +1,2 @@
+0          ICON                    "title.ico"
+#include <wx/msw/wx.rc>

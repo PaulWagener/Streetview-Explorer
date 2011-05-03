@@ -10,4 +10,3 @@
 void setStatus(const char *newStatus, ...);
 
 #endif	/* STATUSTEXT_H */
-

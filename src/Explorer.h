@@ -28,7 +28,7 @@ private:
 
     void loadPanorama(const char *panoid, int zoom_level);
     bool gotPanorama(const char *pano_id, int zoom_level);
-    bool hasPanorama(Panorama *p);
+    bool gotPanorama(Panorama *p);
     Panorama* getPanoramaById(const char* pano_id);
     Panorama* getClosestPanorama();
     
@@ -39,6 +39,7 @@ public:
     Player player;
 
     Explorer(const char* firstPano);
+    ~Explorer();
     
     void display(int width, int height);
     void downloadThread();

@@ -219,11 +219,13 @@ void MainFrame::ShowMain() {
     sizer->AddStretchSpacer(1);
 
     //Horizontally centered title image
-    wxBoxSizer *titleSizer = new wxBoxSizer(wxHORIZONTAL);
-    titleSizer->AddStretchSpacer(1);
-    titleSizer->Add(new wxStaticBitmap(mainPanel, wxID_ANY, wxBitmap("title.png", wxBITMAP_TYPE_PNG)));
-    titleSizer->AddStretchSpacer(1);
-    sizer->Add(titleSizer, 0, wxEXPAND);
+    if (wxFileExists("title.png")) {
+        wxBoxSizer *titleSizer = new wxBoxSizer(wxHORIZONTAL);
+        titleSizer->AddStretchSpacer(1);
+        titleSizer->Add(new wxStaticBitmap(mainPanel, wxID_ANY, wxBitmap("title.png", wxBITMAP_TYPE_PNG)));
+        titleSizer->AddStretchSpacer(1);
+        sizer->Add(titleSizer, 0, wxEXPAND);
+    }
 
     //Some space between combobox and title
     sizer->AddSpacer(30);

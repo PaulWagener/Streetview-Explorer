@@ -20,6 +20,13 @@ Explorer::Explorer(const char* firstPano) {
     strncpy((char*) &firstPanorama, firstPano, PANOID_LENGTH + 1);
 }
 
+Explorer::~Explorer() {
+    for(unsigned int i = 0; i < panoramas.size(); i++) {
+        delete panoramas[i];
+    }
+    panoramas.clear();
+}
+
 /**
  * Loads a new panorama in a different thread
  * 
@@ -38,22 +45,6 @@ void Explorer::loadPanorama(const char *panoid, int zoom_level) {
 }
 
 /**
- * Starts where loadPanorama() leaves off. (Down)load a panorama to the cache
- * and in memory. The panorama still needs a loadGL() call in the OpenGL thread to load in textures
- * before it can be displayed.
- */
-void Explorer::downloadThread() {
-    try {
-        Panorama *p = new Panorama(downloadPano, downloadZoomLevel);
-        downloadedPano = p;
-        setStatus(""); //Reset the status text, we loaded the panorama succesfully
-    } catch (const char* c) {
-        setStatus("Exception caught: %s", c);
-    }
-    downloading = false;
-}
-
-/**
  * Check if a panorama with a certain ID is already present in the panoramas vector
  *
  * @param pano_id
@@ -68,7 +59,7 @@ bool Explorer::gotPanorama(const char* pano_id, int zoom_level) {
     return false;
 }
 
-bool Explorer::hasPanorama(Panorama *panorama) {
+bool Explorer::gotPanorama(Panorama *panorama) {
     for (unsigned int i = 0; i < panoramas.size(); i++) {
         if (panoramas[i] == panorama)
             return true;
@@ -89,7 +80,6 @@ Panorama* Explorer::getClosestPanorama() {
 
 
 }
-bool efirst = true;
 
 /**
  * 
@@ -149,8 +139,6 @@ Panorama* Explorer::getPanoramaById(const char* pano_id) {
     }
     return NULL;
 }
-
-int g = 0;
 
 void Explorer::display(int width, int height) {
     updatePanoramas();
@@ -225,7 +213,7 @@ void Explorer::display(int width, int height) {
     Panorama *closestPanorama = getClosestPanorama();
 
     //Ensure oldClosestPanorama ain't a dangling pointer
-    if (!hasPanorama(oldClosestPanorama))
+    if (!gotPanorama(oldClosestPanorama))
         oldClosestPanorama = NULL;
 
     //Increase opacity of all Panorama's
@@ -271,4 +259,20 @@ void Explorer::display(int width, int height) {
 
     //Draw the player
     player.drawPlayer(referencePoint);
+}
+
+/**
+ * Starts where loadPanorama() leaves off. (Down)load a panorama to the cache
+ * and in memory. The panorama still needs a loadGL() call in the OpenGL thread to load in textures
+ * before it can be displayed.
+ */
+void Explorer::downloadThread() {
+    try {
+        Panorama *p = new Panorama(downloadPano, downloadZoomLevel);
+        downloadedPano = p;
+        setStatus(""); //Reset the status text, we loaded the panorama succesfully
+    } catch (const char* c) {
+        setStatus("Exception caught: %s", c);
+    }
+    downloading = false;
 }

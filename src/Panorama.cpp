@@ -96,7 +96,7 @@ const char* Panorama::getPanoIdInDirection(float direction) {
  */
 bool Panorama::isCached(const char* pano_id, int zoom_level) {
     //The cachefile name
-    char filename[CACHE_FILENAME_LENGTH];
+    char filename[CACHE_FILENAME_LENGTH+1];
     getCacheFilename(pano_id, zoom_level, filename);
 
     //Check if the cachefile exists
@@ -390,7 +390,7 @@ void Panorama::drawVertexAtAzimuthElevation(int x, int y, struct renderSettings 
  * @param zoom_level
  */
 void Panorama::loadFromCache(const char *pano_id, int zoom_level) {
-    char cachefile[CACHE_FILENAME_LENGTH];
+    char cachefile[CACHE_FILENAME_LENGTH+1];
     getCacheFilename(pano_id, zoom_level, cachefile);
 
     FILE *f = fopen(cachefile, "rb");
@@ -651,7 +651,7 @@ void Panorama::downloadAndCache(const char* pano_id, int zoom_level) {
 
     //Cache the panorama to a file
     {
-        char cachefile[CACHE_FILENAME_LENGTH];
+        char cachefile[CACHE_FILENAME_LENGTH+1];
         getCacheFilename(pano_id, zoom_level, cachefile);
 
         FILE *f = fopen(cachefile, "wb");

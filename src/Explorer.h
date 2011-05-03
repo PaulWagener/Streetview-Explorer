@@ -11,41 +11,45 @@
 #ifndef EXPLORER_H
 #define	EXPLORER_H
 
+/**
+ * Explorer is the main class for the actual 'game'.
+ * It
+ */
 class Explorer {
-public:
-    Explorer(const char* firstPano);
-
+private:
+    //Field to hold the pano_id we should load on startup
+    //to bridge the gap between the constructor and the time that there is an OpenGL context active
     char firstPanorama[PANOID_LENGTH+1];
-    bool requestDownloadThread;
-    
+
+    //Fields to communicate between the (down)loading thread and the OpenGL thread
     char downloadPano[PANOID_LENGTH+1];
+    int downloadZoomLevel;
     bool downloading;
     Panorama *downloadedPano;
 
+    //When walking
+    Panorama *oldClosestPanorama;
+    float oldClosestOpacity;
+
+    struct utmPosition referencePoint;
+
+    void loadPanorama(const char *panoid, int zoom_level);
     bool hasPanorama(const char *pano_id, int zoom_level);
     bool hasPanorama(Panorama *p);
+    Panorama* getPanoramaById(const char* pano_id);
     Panorama* getClosestPanorama();
     
     std::vector<Panorama*> panoramas;
     void updatePanoramas();
-    Panorama* getPanoramaById(const char* pano_id);
-
-    Panorama *oldClosestPanorama;
-
-    float oldClosestOpacity;
-
+    
+public:
     Player player;
 
-    void downloadThread();
-
-    struct utmPosition referencePoint;
+    Explorer(const char* firstPano);
+    
     void display(int width, int height);
-
-    void loadPanorama(const char *panoid, int zoom_level);
-    void collision_detection();
-    void init();
-private:
-
+    void downloadThread();
+    bool requestDownloadThread;
 };
 
 #endif	/* EXPLORER_H */

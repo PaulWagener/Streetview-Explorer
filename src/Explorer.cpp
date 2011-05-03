@@ -12,6 +12,7 @@
 #include "Panorama.h"
 #include "Settings.h"
 #include <math.h>
+#include "statustext.h"
 
 Explorer::Explorer(const char* firstPano) {
     requestDownloadThread = false;
@@ -27,9 +28,7 @@ Explorer::Explorer(const char* firstPano) {
 }
 
 /**
- * Load a new panorama into the panoramas vector.
- * It needs to be called twice if the panorama isn't donloaded yet
- * Assumes an OpenGL context to be present
+ * Loads a new panorama in a different thread
  * 
  * @param panoid
  * @param zoom_level
@@ -40,31 +39,23 @@ void Explorer::loadPanorama(const char *panoid, int zoom_level) {
 
     //File is not cached, request a download procedure
     strncpy(downloadPano, panoid, PANOID_LENGTH + 1);
+    downloadZoomLevel = zoom_level;
     downloading = true;
     requestDownloadThread = true;
-    //downloadThread();
-
-}
-
-void Explorer::init() {
-    //Kruisstraat (kruising): FKoscBO7bd5LkgMmjGLAeQ
-    //Kruisstraat (weverstraat): 6B46Si-orLNYnBhDKdPDiw
-    //Kruisstraat (weverstraat 2): eE1uAIWbo1bDccxVNyE0Jg
-    //Kruisstraat (weverstraat 3): cCstFkrrJxSI5Ql4OOPb1Q
-    //Kruisstraat (weverstraat 4): GL6UZFuHTQLQCnAvE2VTHw
-    //Kruisstraat (115): qdAqxSu085_gynN0R8k4RA
-    //Times Square: dU1D9CsdYTN-3YDiyyUSnQ
 }
 
 /**
- *
+ * Starts where loadPanorama() leaves off. (Down)load a panorama to the cache
+ * and in memory. The panorama still needs a loadGL() call in the OpenGL thread to load in textures
+ * before it can be displayed.
  */
 void Explorer::downloadThread() {
-	try {
-        Panorama *p = new Panorama(downloadPano, settings.zoomLevel);
+    try {
+        Panorama *p = new Panorama(downloadPano, downloadZoomLevel);
         downloadedPano = p;
+        setStatus(""); //Reset the status text, we loaded the panorama succesfully
     } catch (const char* c) {
-        printf("Exception caught: %s\n", c);
+        setStatus("Exception caught: %s", c);
     }
     downloading = false;
 }
@@ -198,10 +189,10 @@ void Explorer::display(int width, int height) {
     //The panorama's themselves are drawn at full intensity without lighting.
     glEnable(GL_LIGHT0);
 
-	GLfloat ambient[] =  {0.8f, 0.8f, 0.8f, 1.0f};
-	GLfloat diffuse[] =  {0.6f, 0.7f, 0.7f, 1.0f};
-	GLfloat specular[] =  {1.0f, 1.0f, 1.0f, 1.0f};	
-	GLfloat position[] =  {0.0f, 0.0f, 0.0f, 1.0f};
+    GLfloat ambient[] = {0.8f, 0.8f, 0.8f, 1.0f};
+    GLfloat diffuse[] = {0.6f, 0.7f, 0.7f, 1.0f};
+    GLfloat specular[] = {1.0f, 1.0f, 1.0f, 1.0f};
+    GLfloat position[] = {0.0f, 0.0f, 0.0f, 1.0f};
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
@@ -214,13 +205,7 @@ void Explorer::display(int width, int height) {
 
     player.updatePosition();
 
-    //Update closestPanorama
-    //Below this code we can use closestPanorama
-
-
-    collision_detection();
     glLoadIdentity();
-
     player.targetCamera(referencePoint);
 
     glColor3f(1, 1, 1);
@@ -239,7 +224,7 @@ void Explorer::display(int width, int height) {
 
     Panorama *closestPanorama = getClosestPanorama();
 
-    //Ensure oldClosestPanorama ain't dangling
+    //Ensure oldClosestPanorama ain't a dangling pointer
     if (!hasPanorama(oldClosestPanorama))
         oldClosestPanorama = NULL;
 
@@ -263,7 +248,7 @@ void Explorer::display(int width, int height) {
         if (oldClosestPanorama == NULL)
             oldClosestPanorama = closestPanorama;
 
-        //Draw the old fading panorama
+        //If another panorama is
         if (oldClosestPanorama != closestPanorama && oldClosestPanorama != NULL) {
             glColor4f(1, 1, 1, oldClosestOpacity);
             oldClosestPanorama->draw(referencePoint, true);
@@ -276,68 +261,14 @@ void Explorer::display(int width, int height) {
                 oldClosestOpacity = 1;
                 oldClosestPanorama = closestPanorama;
             }
-
-
         }
-
-
-
     }
 
+    //Draw all other panorama's (including the closest just to fill the depth buffer)
     for (unsigned int i = 0; i < panoramas.size(); i++) {
-        //glClear((GL_DEPTH_BUFFER_BIT));
-        //if (panoramas[i] != closestPanorama)
-        {
-            //            if(i == panoramas.size()-1) {
-            //                start = 80;
-            //                end = 100;
-            //            }
-
-            panoramas[i]->draw(referencePoint);
-        }
+        panoramas[i]->draw(referencePoint);
     }
 
-    //Dots for debugging
-    if (false && closestPanorama != NULL) {
-        glPushMatrix();
-        glTranslated(closestPanorama->location.easting - referencePoint.easting, closestPanorama->location.northing - referencePoint.northing, 0);
-        glRotatef(180 - closestPanorama->pano_yaw_deg, 0, 0, 1);
-
-        glDisable(GL_TEXTURE_2D);
-        glDisable(GL_DEPTH_TEST);
-        glPointSize(2);
-        glColor3f(1, 0, 0);
-        glBegin(GL_POINTS);
-        for (int y = 0; y < closestPanorama->mapHeight; y++) {
-            for (int x = 0; x < closestPanorama->mapWidth; x++) {
-
-                //                int index = closestPanorama->depthmapIndices[y * closestPanorama->mapWidth + x];
-                int panoindex = closestPanorama->panomapIndices[y * closestPanorama->mapWidth + x];
-                if (panoindex == closestPanorama->ownPanomapIndex)
-                    glColor3f(1, 0, 0);
-                else
-                    glColor3f(0, 0, 1);
-
-                //if(index == theDepthIndex)
-                //closestPanorama->drawVertexAtAzimuthElevation(x, y);
-                //glVertex3f(0, 0, 0);
-
-            }
-
-        }
-
-        glEnd();
-        glEnable(GL_DEPTH_TEST);
-        glEnable(GL_TEXTURE_2D);
-        glPopMatrix();
-    }
-
+    //Draw the player
     player.drawPlayer(referencePoint);
-
-}
-
-/**
- * Collision detection
- */
-void Explorer::collision_detection() {
 }

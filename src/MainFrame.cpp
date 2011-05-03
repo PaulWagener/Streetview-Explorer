@@ -19,6 +19,9 @@ using namespace std;
 #define DEFAULT_HEIGHT 600
 
 const wxEventType myEVT_PANORAMA_START = wxNewEventType();
+const wxEventType myEVT_SET_STATUS = wxNewEventType();
+
+MainFrame* MainFrame::mainframe = NULL;
 
 enum {
     COMBOBOX_LOCATIONS = wxID_HIGHEST,
@@ -34,6 +37,8 @@ MainFrame::MainFrame()
 : wxFrame(NULL, wxID_ANY, "StreetView Explorer", wxDefaultPosition, wxSize(DEFAULT_WIDTH, DEFAULT_HEIGHT)),
 isStartingWithPanorama(false) {
 
+    mainframe = this;
+
     //Set up menu
     wxMenu *fileMenu = new wxMenu();
     fileMenu->Append(MENU_BACKTOMAIN, "&Go to main screen");
@@ -45,7 +50,11 @@ isStartingWithPanorama(false) {
     menuBar->Append(fileMenu, "&File");
     SetMenuBar(menuBar);
 
-	mainPanel = new wxPanel(this);
+    statusbar = new wxStatusBar(this);
+    statusbar->SetStatusText("");
+    SetStatusBar(statusbar);
+
+    mainPanel = new wxPanel(this);
 
     //Event handlers
     Connect(MENU_BACKTOMAIN, wxEVT_COMMAND_MENU_SELECTED, wxMenuEventHandler(MainFrame::OnGoToMainScreen));
@@ -53,6 +62,7 @@ isStartingWithPanorama(false) {
     Connect(wxID_ABOUT, wxEVT_COMMAND_MENU_SELECTED, wxMenuEventHandler(MainFrame::OnAbout));
     Connect(wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxMenuEventHandler(MainFrame::OnQuit));
     Connect(wxID_ANY, myEVT_PANORAMA_START, wxCommandEventHandler(MainFrame::OnPanoramaStart));
+    Connect(wxID_ANY, myEVT_SET_STATUS, wxCommandEventHandler(MainFrame::OnSetStatus));
 
     ShowMain();
 
@@ -63,12 +73,16 @@ isStartingWithPanorama(false) {
     //StartWithPanorama("dU1D9CsdYTN-3YDiyyUSnQ");
 }
 
+void MainFrame::OnSetStatus(wxCommandEvent &event) {
+    statusbar->SetStatusText(event.GetString());
+}
+
 /**
  * Do the actual work callers expect ShowPanorama() to do. Replace the contents of the frame
  * with an OpenGL window with the actual game.
  */
 void MainFrame::OnPanoramaStart(wxCommandEvent &event) {
-    glCanvas = new GLCanvas(mainPanel, (const char*)event.GetString());
+    glCanvas = new GLCanvas(mainPanel, (const char*) event.GetString());
     wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
     sizer->Add(glCanvas, 1, wxEXPAND);
     ReplaceSizer(sizer);
@@ -197,7 +211,7 @@ void MainFrame::RefillLocations() {
  *
  * @param pano_id
  */
- void MainFrame::StartWithPanorama(const char* pano_id) {
+void MainFrame::StartWithPanorama(const char* pano_id) {
     wxCommandEvent event(myEVT_PANORAMA_START, GetId());
     event.SetString(pano_id);
     wxPostEvent(this, event);

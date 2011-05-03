@@ -213,17 +213,17 @@ void Player::drawPlayer(struct utmPosition reference) {
     }
     glPopMatrix();
 
+    //Right arm
     glPushMatrix();
-    {
-        //Right arm
+    {        
         glTranslatef(RAYMAN_LENGTH + (BODY_WIDTH / 2) + (ARM_WIDTH / 2), 0, SHOULDER_HEIGHT - (ARM_LENGTH / 2));
         drawBox(ARM_WIDTH, BODY_DEPTH, ARM_LENGTH);
     }
     glPopMatrix();
 
+    //Left arm
     glPushMatrix();
-    {
-        //Left arm
+    {        
         glTranslatef(-RAYMAN_LENGTH - (BODY_WIDTH / 2) - (ARM_WIDTH / 2), 0, SHOULDER_HEIGHT - (ARM_LENGTH / 2));
         drawBox(ARM_WIDTH, BODY_DEPTH, ARM_LENGTH);
     }

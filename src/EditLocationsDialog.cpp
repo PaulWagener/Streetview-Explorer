@@ -100,7 +100,7 @@ void EditLocationsDialog::OnSelectionChanges(wxCommandEvent &event) {
  * @param event
  */
 void EditLocationsDialog::OnEditItem(wxCommandEvent &event) {
-    //list_locations->Edit(GetSelected());
+    list_locations->EditLabel(GetSelected());
     editing = true;
     UpdateButtons();
 }
@@ -140,7 +140,7 @@ void EditLocationsDialog::OnAdd(wxCommandEvent &event) {
     RefillList();
 
     //Let user edit name immediately
-    //list_locations->Edit(settings.locations.size()-1);
+    list_locations->EditLabel(settings.locations.size()-1);
     editing = true;
     UpdateButtons();
 }
@@ -273,7 +273,6 @@ wxString EditLocationsDialog::OpenPasteDialog() {
     //Default value for if the dialog fails
     pasted_panoID = wxString("");
 
-
     pasteDialog = new wxDialog(this, wxID_ANY, "Paste Google StreetView link", wxDefaultPosition, wxSize(500, 100));
     wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 
@@ -306,8 +305,9 @@ void EditLocationsDialog::OnPasteLink(wxCommandEvent &event) {
     if(id.length() < PANOID_LENGTH)
         return;
 
-    pasted_panoID = id;
-    pasteDialog->Close();
+    pasted_panoID = id; //Only to be used again in OpenPasteDialog
+    
+    pasteDialog->Close(); //Unblock OpenPasteDialog() ShowModal call
 }
 
 /**

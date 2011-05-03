@@ -6,12 +6,14 @@
  */
 
 #include "Utm.h"
+#include "gl.h"
 
 #ifndef PLAYER_H
 #define	PLAYER_H
 
 class Player {
 public:
+    GLUquadric *head;
 
     struct keys {
         bool forward;
@@ -25,13 +27,14 @@ public:
     //Player position
     struct utmPosition target_location;
     struct utmPosition location;
+    float target_rotation;
     float rotation;
     float height;
 
     //Camera position
     struct cam {
         struct utmPosition location;
-        float elevation;
+        float elevation, target_elevation;
         float distance;
         float rotation;
         float x,y,z;
@@ -39,6 +42,7 @@ public:
 
 
     Player();
+    ~Player();
     void drawBox(const float width, const float depth, const float height);
     void drawPlayer(struct utmPosition reference);
     void moveMouse(int x, int y);

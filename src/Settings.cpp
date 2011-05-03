@@ -32,11 +32,22 @@ Settings::Settings() {
 
         //Read in the user defined locations
         struct pano_location l;
-        while (fscanf(f, "location = %22[a-zA-Z0-90_-] %99[^\n]\n", (char*) &l.pano_id, (char*) &l.name) > 0) {
+        while (fscanf(f, "location = %22[a-zA-Z0-90_-] %99[^\n]\n", (char*) &l.pano_id, (char*) &l.name) == 2) {
             locations.push_back(l);
         }
         fclose(f);
-
+    } else {
+        //Default locations
+        struct pano_location london = {"zyqr7tEQSPQdsXHDy2V51Q", "Trafalgar Square - London"};
+        struct pano_location dedam = {"8iF3P8ZJ6HHUELqglMWeEg", "De Dam - Amsterdam"};
+        struct pano_location timessquare = {"BXihG0Q9zNPB9r-lkG-NVg", "Times square - New York"};
+        struct pano_location louvre = {"FP_aTaS5WoDk8AhmDfir_w", "The Louvre - Paris"};
+        struct pano_location lasvegas = {"7zwIO7_PuEatkrBXhsn8BQ", "The Strip - Las Vegas"};
+        locations.push_back(london);
+        locations.push_back(dedam);
+        locations.push_back(timessquare);
+        locations.push_back(louvre);
+        locations.push_back(lasvegas);
     }
 }
 

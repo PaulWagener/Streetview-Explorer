@@ -39,14 +39,14 @@ public:
     Explorer explorer;
 
     void OnResize(wxSizeEvent& evt);
-    void onPaint(wxPaintEvent& evt);
+    void OnPaint(wxPaintEvent& evt);
 
     // events
-    void mouseMoved(wxMouseEvent& event);
-    void mouseDown(wxMouseEvent& event);
-    void mouseWheelMoved(wxMouseEvent& event);
-    void keyDown(wxKeyEvent& event);
-    void keyUp(wxKeyEvent& event);
+    void OnMouseMotion(wxMouseEvent& event);
+    void OnMouseDown(wxMouseEvent& event);
+    void OnMouseWheel(wxMouseEvent& event);
+    void OnKeyDown(wxKeyEvent& event);
+    void OnKeyUp(wxKeyEvent& event);
 
 
     void OnTimer(wxTimerEvent& event);

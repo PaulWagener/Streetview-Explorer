@@ -5,28 +5,36 @@
 #include <ApplicationServices/ApplicationServices.h>
 #endif
 
-void SetStdOutToNewConsole()
-{
-  int hConHandle;
-  long lStdHandle;
-  FILE *fp;
+#if __WXMSW__
 
-  // allocate a console for this app
-  AllocConsole();
+void SetStdOutToNewConsole() {
+    int hConHandle;
+    long lStdHandle;
+    FILE *fp;
 
-  // redirect unbuffered STDOUT to the console
-  lStdHandle = (long)GetStdHandle(STD_OUTPUT_HANDLE);
-  hConHandle = _open_osfhandle(lStdHandle, _O_TEXT);
-  fp = _fdopen( hConHandle, "w" );
-  *stdout = *fp;
+    // allocate a console for this app
+    AllocConsole();
 
-  setvbuf( stdout, NULL, _IONBF, 0 );
+    // redirect unbuffered STDOUT to the console
+    lStdHandle = (long) GetStdHandle(STD_OUTPUT_HANDLE);
+    hConHandle = _open_osfhandle(lStdHandle, _O_TEXT);
+    fp = _fdopen(hConHandle, "w");
+    *stdout = *fp;
+
+    setvbuf(stdout, NULL, _IONBF, 0);
 }
+#endif
 
 bool Application::OnInit() {
-	SetStdOutToNewConsole();
-    wxImage::AddHandler(new wxPNGHandler);
+    //Make sure there is a cache directory in the working directory
+    ::wxMkDir(wxString("cache"), 0755);
     
+    wxImage::AddHandler(new wxPNGHandler);
+
+#if __WXMSW__
+    SetStdOutToNewConsole();
+#endif
+
 #if __WXMAC__
     /**
      * This code serves no purpose other than debugging.
@@ -42,8 +50,8 @@ bool Application::OnInit() {
 
     //Create the mainframe which creates the rest
     new MainFrame();
-    
-    return true;     
+
+    return true;
 }
 
 IMPLEMENT_APP(Application)

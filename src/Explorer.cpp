@@ -60,7 +60,14 @@ void Explorer::downloadThread() {
     downloading = false;
 }
 
-bool Explorer::hasPanorama(const char* pano_id, int zoom_level) {
+/**
+ * Check if a panorama with a certain ID is already present in the panoramas vector
+ *
+ * @param pano_id
+ * @param zoom_level
+ * @return
+ */
+bool Explorer::gotPanorama(const char* pano_id, int zoom_level) {
     for (unsigned int i = 0; i < panoramas.size(); i++) {
         if (strcmp(panoramas[i]->pano_id, pano_id) == 0 && panoramas[i]->zoom_level == zoom_level)
             return true;
@@ -129,7 +136,7 @@ void Explorer::updatePanoramas() {
 
         //Then see if there are any adjacent panorama's not already loaded
         for (unsigned int i = 0; i < closestPanorama->links.size(); i++) {
-            if (!hasPanorama(closestPanorama->links[i].pano_id, settings.zoomLevel))
+            if (!gotPanorama(closestPanorama->links[i].pano_id, settings.zoomLevel))
                 loadPanorama(closestPanorama->links[i].pano_id, settings.zoomLevel);
         }
     }

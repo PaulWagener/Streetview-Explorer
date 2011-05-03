@@ -34,7 +34,7 @@ private:
     struct utmPosition referencePoint;
 
     void loadPanorama(const char *panoid, int zoom_level);
-    bool hasPanorama(const char *pano_id, int zoom_level);
+    bool gotPanorama(const char *pano_id, int zoom_level);
     bool hasPanorama(Panorama *p);
     Panorama* getPanoramaById(const char* pano_id);
     Panorama* getClosestPanorama();

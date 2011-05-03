@@ -51,7 +51,6 @@ isStartingWithPanorama(false) {
     SetMenuBar(menuBar);
 
     statusbar = new wxStatusBar(this);
-    statusbar->SetStatusText("");
     SetStatusBar(statusbar);
 
     mainPanel = new wxPanel(this);
@@ -70,7 +69,7 @@ isStartingWithPanorama(false) {
     this->Center();
     this->Show();
 
-    //StartWithPanorama("dU1D9CsdYTN-3YDiyyUSnQ");
+    StartWithPanorama("dU1D9CsdYTN-3YDiyyUSnQ");
 }
 
 void MainFrame::OnSetStatus(wxCommandEvent &event) {

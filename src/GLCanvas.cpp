@@ -101,7 +101,7 @@ void GLCanvas::OnMouseDown(wxMouseEvent& event) {
  * @param event
  */
 void GLCanvas::OnMouseWheel(wxMouseEvent& event) {
-    explorer.player.cam.distance += 1;
+    explorer.player.mouseWheel(event.GetWheelRotation());
 }
 
 /**

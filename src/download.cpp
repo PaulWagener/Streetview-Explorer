@@ -3,13 +3,14 @@
 
 #include <jpeglib.h>
 #include <jerror.h>
+#include <curl/curl.h>
 
 size_t write_download_data(void *ptr, size_t size, size_t nmemb, std::vector<unsigned char>* b) throw () {
     size_t oldSize = b->size();
     try {
         b->resize(b->size() + size * nmemb);
     } catch (const std::bad_alloc&) {
-        //errx(EX_UNAVAILABLE, "download failed: out of memory");
+        throw "download failed: out of memory";
     }
     memcpy(&(*b)[oldSize], ptr, size * nmemb);
     return size * nmemb;
@@ -21,10 +22,7 @@ size_t write_download_data(void *ptr, size_t size, size_t nmemb, std::vector<uns
  * @param url
  * @return
  */
-
-#include <curl/curl.h>
-std::auto_ptr<std::vector<unsigned char> >
-download(const char *url) {
+std::auto_ptr<std::vector<unsigned char> > download(const char *url) {
     setStatus("Downloading %s\n", url);
 
     std::auto_ptr<std::vector<unsigned char> > b(new std::vector<unsigned char>());

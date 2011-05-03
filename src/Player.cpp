@@ -13,6 +13,19 @@ Player::Player() {
     keys.strafe_left = false;
     keys.strafe_right = false;
     head = NULL;
+
+    cam.target_elevation = 25;
+    cam.elevation = cam.target_elevation;
+
+    cam.target_distance = 12;
+    cam.rotation = 0;
+    cam.x = 0;
+    cam.y = 0;
+    cam.z = 0;
+
+    target_rotation = 0;
+    rotation = target_rotation;
+    height = -3;
 }
 
 Player::~Player() {
@@ -37,24 +50,26 @@ void Player::moveMouse(int x, int y) {
         cam.target_elevation = MIN_CAM_ELEVATION;
 }
 
+/**
+ * Let the player zoom in and out with the scroll wheel
+ * 
+ * @param delta
+ */
+void Player::mouseWheel(int delta) {
+    const int MIN_ZOOM = 7;
+    const int MAX_ZOOM = 50;
+    const float ZOOM_RATE = 0.1;
+
+    cam.target_distance -= delta * ZOOM_RATE;
+
+    if(cam.target_distance > MAX_ZOOM) cam.target_distance = MAX_ZOOM;
+    if(cam.target_distance < MIN_ZOOM) cam.target_distance = MIN_ZOOM;
+}
+
 void Player::initializeLocation(struct utmPosition position) {
     target_location = position;
     location = position;
     cam.location = position;
-
-
-    cam.target_elevation = 25;
-    cam.elevation = cam.target_elevation;
-    
-    cam.distance = 12;
-    cam.rotation = 0;
-    cam.x = 0;
-    cam.y = 0;
-    cam.z = 0;
-
-    target_rotation = 0;
-    rotation = target_rotation;
-    height = -3;
 }
 
 void Player::targetCamera(struct utmPosition reference) {
@@ -62,6 +77,7 @@ void Player::targetCamera(struct utmPosition reference) {
     cam.location = location;
     
     cam.elevation = cam.target_elevation + (cam.elevation - cam.target_elevation) / 1.3f;
+    cam.distance = cam.target_distance + (cam.distance - cam.target_distance) / 1.1f;
     rotation = target_rotation + (rotation - target_rotation) / 1.18f;
     
     cam.location.northing = location.northing + cos((180 + rotation) * RADIAL) * cos(cam.elevation * RADIAL) * cam.distance;
@@ -71,7 +87,7 @@ void Player::targetCamera(struct utmPosition reference) {
     cam.x = (float)(cam.location.easting - reference.easting);
     cam.y = (float)(cam.location.northing - reference.northing);
     
-    float target_z = sin(cam.elevation * RADIAL) * cam.distance + height;
+    float target_z = sin(cam.elevation * RADIAL) * cam.target_distance + height;
 
     //Skimmy along the ground if the camera is looking up
     if (target_z < height + 1)

@@ -35,7 +35,7 @@ public:
     struct cam {
         struct utmPosition location;
         float elevation, target_elevation;
-        float distance;
+        float distance, target_distance;
         float rotation;
         float x,y,z;
     } cam;
@@ -45,6 +45,7 @@ public:
     ~Player();
     void drawBox(const float width, const float depth, const float height);
     void drawPlayer(struct utmPosition reference);
+    void mouseWheel(int delta);
     void moveMouse(int x, int y);
     void initializeLocation(struct utmPosition position);
     void updatePosition();

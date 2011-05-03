@@ -25,7 +25,9 @@ Player::Player() {
 
     target_rotation = 0;
     rotation = target_rotation;
-    height = -3;
+    target_height = -3;
+    height = target_height;
+
 }
 
 Player::~Player() {
@@ -79,6 +81,7 @@ void Player::targetCamera(struct utmPosition reference) {
     cam.elevation = cam.target_elevation + (cam.elevation - cam.target_elevation) / 1.3f;
     cam.distance = cam.target_distance + (cam.distance - cam.target_distance) / 1.1f;
     rotation = target_rotation + (rotation - target_rotation) / 1.18f;
+    height = target_height + (height - target_height) / 1.001f;
     
     cam.location.northing = location.northing + cos((180 + rotation) * RADIAL) * cos(cam.elevation * RADIAL) * cam.distance;
     cam.location.easting = location.easting + sin((180 + rotation) * RADIAL) * cos(cam.elevation * RADIAL) * cam.distance;
@@ -87,11 +90,11 @@ void Player::targetCamera(struct utmPosition reference) {
     cam.x = (float)(cam.location.easting - reference.easting);
     cam.y = (float)(cam.location.northing - reference.northing);
     
-    float target_z = sin(cam.elevation * RADIAL) * cam.target_distance + height;
+    float target_z = sin(cam.elevation * RADIAL) * cam.target_distance + target_height;
 
     //Skimmy along the ground if the camera is looking up
-    if (target_z < height + 1)
-        target_z = height + 1;
+    if (target_z < target_height + 1)
+        target_z = target_height + 1;
 
     cam.z = target_z + (cam.z - target_z) / 1.2f;
 
@@ -197,6 +200,7 @@ void Player::drawBox(const float width, const float depth, const float height) {
  */
 void Player::drawPlayer(struct utmPosition reference) {
 
+    glUseProgram(0);
     glPushMatrix();
     glTranslated(location.easting - reference.easting, location.northing - reference.northing, height);
     glRotatef(target_rotation, 0, 0, -1);

@@ -34,6 +34,8 @@ private:
     
     std::vector<Panorama*> panoramas;
     void updatePanoramas();
+
+    bool glInitialized;
     
 public:
     Player player;

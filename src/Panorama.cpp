@@ -274,15 +274,8 @@ void Panorama::draw(struct utmPosition referencePoint, bool drawAll) {
      * no glColor calls are allowed in the display list that could corrupt the global transparancy.
      * Once faded in we enable the transparant borders and allow glColor calls in the display list
      */
-    bool transparantBorders = true;
     bool settingsChanged = false;
     bool firstTime = false;
-
-    //Do the fade in sequence
-    if (opacity < 1) {
-        transparantBorders = false;
-        glColor4f(1, 1, 1, opacity);
-    }
 
     if (compileList == -1) {
         compileList = glGenLists(1);
@@ -291,8 +284,7 @@ void Panorama::draw(struct utmPosition referencePoint, bool drawAll) {
     }
 
     //If any setting changed from the last time we compiled the list we need to recompile it with the new settings
-    if (compiledRenderSettings.transparantBorders != transparantBorders
-            || compiledRenderSettings.horizontalDetail != settings.horizontal_accuracy
+    if (compiledRenderSettings.horizontalDetail != settings.horizontal_accuracy
             || compiledRenderSettings.verticalAccuracy != settings.vertical_accuracy) {
         settingsChanged = true;
     }
@@ -300,26 +292,21 @@ void Panorama::draw(struct utmPosition referencePoint, bool drawAll) {
     //Recreate the display lists
     if (firstTime || settingsChanged) {
         struct renderSettings renderSettings;
-        renderSettings.transparantBorders = transparantBorders;
         renderSettings.horizontalDetail = settings.horizontal_accuracy;
         renderSettings.verticalAccuracy = settings.vertical_accuracy;
 
         //Recreate display list for 'only own data' panorama
+        renderSettings.transparancy = true;
         glNewList(compileList, GL_COMPILE);
         drawActual(referencePoint, false, renderSettings);
         glEndList();
 
         //Recreate display list for 'all data' panorama
-        //360 panorama only needs to be rendered the first time or when the actual settings changed
-        if (firstTime || compiledRenderSettings.horizontalDetail != settings.horizontal_accuracy ||
-                compiledRenderSettings.verticalAccuracy != settings.vertical_accuracy) {
-            struct renderSettings threeSixtyRenderSettings = renderSettings;
-            threeSixtyRenderSettings.transparantBorders = false;
+        renderSettings.transparancy = false;
+        glNewList(threeSixtyCompileList, GL_COMPILE);
+        drawActual(referencePoint, true, renderSettings);
+        glEndList();
 
-            glNewList(threeSixtyCompileList, GL_COMPILE);
-            drawActual(referencePoint, true, threeSixtyRenderSettings);
-            glEndList();
-        }
 
         compiledRenderSettings = renderSettings;
     }
@@ -342,11 +329,13 @@ void Panorama::draw(struct utmPosition referencePoint, bool drawAll) {
  */
 void Panorama::drawVertexAtAzimuthElevation(int x, int y, struct renderSettings settings) {
     //Set vertex transparancy
-    if (settings.transparantBorders) {
+    if (settings.transparancy)
         glColor4d(1, 1, 1, isTransparant(x, y, settings.horizontalDetail) ? 0 : 1);
-    }
+    else
+        glColor4d(1, 1, 1, 1);
 
-    float rad_azimuth = x / (float) (mapWidth - 1.0f) * TWICE_PI;
+
+        float rad_azimuth = x / (float) (mapWidth - 1.0f) * TWICE_PI;
     float rad_elevation = y / (float) (mapHeight - 1.0f) * PI;
 
     //Calculate the cartesian position of this vertex (if it was at unit distance)
@@ -383,7 +372,7 @@ void Panorama::drawVertexAtAzimuthElevation(int x, int y, struct renderSettings 
  * @param zoom_level
  */
 void Panorama::loadFromCache(const char *pano_id, int zoom_level) {
-    char cachefile[CACHE_FILENAME_LENGTH+1];
+    char cachefile[CACHE_FILENAME_LENGTH + 1];
     getCacheFilename(pano_id, zoom_level, cachefile);
 
     FILE *f = fopen(cachefile, "rb");
@@ -397,9 +386,9 @@ void Panorama::loadFromCache(const char *pano_id, int zoom_level) {
         int xmlSize;
         fread(&xmlSize, sizeof (xmlSize), 1, f);
 
-		std::vector<char> xmlData(xmlSize);
+        std::vector<char> xmlData(xmlSize);
         fread(&xmlData[0], xmlSize, 1, f);
-        loadXML((const char*)&xmlData[0]);
+        loadXML((const char*) &xmlData[0]);
     }
 
     //Read in image
@@ -644,7 +633,7 @@ void Panorama::downloadAndCache(const char* pano_id, int zoom_level) {
 
     //Cache the panorama to a file
     {
-        char cachefile[CACHE_FILENAME_LENGTH+1];
+        char cachefile[CACHE_FILENAME_LENGTH + 1];
         getCacheFilename(pano_id, zoom_level, cachefile);
 
         FILE *f = fopen(cachefile, "wb");
@@ -700,8 +689,8 @@ void Panorama::downloadAndCache(const char* pano_id, int zoom_level) {
  * @return distance in meters
  */
 float Panorama::distanceTo(struct utmPosition location) {
-    float horizontalDist = (float)fabs(location.easting - this->location.easting);
-    float verticalDist = (float)fabs(location.northing - this->location.northing);
+    float horizontalDist = (float) fabs(location.easting - this->location.easting);
+    float verticalDist = (float) fabs(location.northing - this->location.northing);
 
     return sqrt(horizontalDist * horizontalDist + verticalDist * verticalDist);
 }

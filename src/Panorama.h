@@ -26,7 +26,7 @@ struct link {
 };
 
 struct renderSettings {
-    bool transparantBorders;
+    bool transparancy;
     int verticalAccuracy;
     int horizontalDetail;
 };

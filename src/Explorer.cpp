@@ -15,13 +15,15 @@ Explorer::Explorer(const char* firstPano) {
     oldClosestPanorama = NULL;
     oldClosestOpacity = 1;
 
+    glInitialized = false;
+
     //Temporarily store the first panorama we should load
     //until we have an OpenGL context to actually load them in
     strncpy((char*) &firstPanorama, firstPano, PANOID_LENGTH + 1);
 }
 
 Explorer::~Explorer() {
-    for(unsigned int i = 0; i < panoramas.size(); i++) {
+    for (unsigned int i = 0; i < panoramas.size(); i++) {
         delete panoramas[i];
     }
     panoramas.clear();
@@ -112,6 +114,7 @@ void Explorer::updatePanoramas() {
         //and are not the closestPanorama itself
         for (unsigned int i = 0; i < panoramas.size(); i++) {
             if (panoramas[i] != closestPanorama && !closestPanorama->hasAdjacent(panoramas[i]->pano_id)) {
+                delete panoramas[i];
                 panoramas.erase(panoramas.begin() + i);
                 i--;
             }
@@ -140,7 +143,39 @@ Panorama* Explorer::getPanoramaById(const char* pano_id) {
     return NULL;
 }
 
+float hh = 0;
+
 void Explorer::display(int width, int height) {
+    int fragment_shader;
+    if (!glInitialized) {
+
+        glShadeModel(GL_SMOOTH);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+        //Light is only used to illuminate Streetview Guy,
+        //The panorama's themselves are drawn at full intensity without lighting.
+        glEnable(GL_LIGHT0);
+
+        GLfloat ambient[] = {0.8f, 0.8f, 0.8f, 1.0f};
+        GLfloat diffuse[] = {0.6f, 0.7f, 0.7f, 1.0f};
+        GLfloat specular[] = {1.0f, 1.0f, 1.0f, 1.0f};
+        GLfloat position[] = {0.0f, 0.0f, 0.0f, 1.0f};
+
+        glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+        glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+        glLightfv(GL_LIGHT0, GL_POSITION, position);
+
+        //ggg = false;
+        fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+        const char *p = "uniform sampler2D tex;uniform float alpha; void main(){gl_FragColor = gl_Color * texture2D(tex, gl_TexCoord[0].xy);gl_FragColor.a = gl_Color.w*alpha;}";
+        glShaderSource(fragment_shader, 1, &p, NULL);
+        glCompileShader(fragment_shader);
+    }
+
     updatePanoramas();
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -167,31 +202,14 @@ void Explorer::display(int width, int height) {
 
     /* Initialize OpenGL */
     glClearColor(1, 1, 1, 1);
-    glShadeModel(GL_SMOOTH);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
-    //Light is only used to illuminate Streetview Guy,
-    //The panorama's themselves are drawn at full intensity without lighting.
-    glEnable(GL_LIGHT0);
-
-    GLfloat ambient[] = {0.8f, 0.8f, 0.8f, 1.0f};
-    GLfloat diffuse[] = {0.6f, 0.7f, 0.7f, 1.0f};
-    GLfloat specular[] = {1.0f, 1.0f, 1.0f, 1.0f};
-    GLfloat position[] = {0.0f, 0.0f, 0.0f, 1.0f};
-
-    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
-    glLightfv(GL_LIGHT0, GL_POSITION, position);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
 
     player.updatePosition();
+
 
     glLoadIdentity();
     player.targetCamera(referencePoint);
@@ -223,13 +241,24 @@ void Explorer::display(int width, int height) {
             panoramas[i]->opacity = 1;
     }
 
+    //
+    const int program = glCreateProgram();
+    glAttachShader(program, fragment_shader);
+    glLinkProgram(program);
+    glUseProgram(program);
+    const int alphaUniform = glGetUniformLocation(program, "alpha");
+    
+    
     /**
      * Draw the background, this is from the panorama the closest
      * to the camera because it has the best perspective
      */
     if (closestPanorama != NULL) {
+        int gh = closestPanorama->depthmapIndices[closestPanorama->mapHeight * closestPanorama->mapWidth - 1];
+        float g = closestPanorama->depthmapPlanes[gh].d;
+        player.target_height = -g;
 
-        glColor4f(1, 1, 1, 1);
+        glUniform1f(alphaUniform, 1);
         closestPanorama->draw(referencePoint, true);
         glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -238,7 +267,8 @@ void Explorer::display(int width, int height) {
 
         //If another panorama is
         if (oldClosestPanorama != closestPanorama && oldClosestPanorama != NULL) {
-            glColor4f(1, 1, 1, oldClosestOpacity);
+            //glColor4f(1, 1, 1, oldClosestOpacity);
+            glUniform1f(alphaUniform, oldClosestOpacity);
             oldClosestPanorama->draw(referencePoint, true);
             glColor4f(1, 1, 1, 1);
             glClear(GL_DEPTH_BUFFER_BIT);
@@ -254,8 +284,13 @@ void Explorer::display(int width, int height) {
 
     //Draw all other panorama's (including the closest just to fill the depth buffer)
     for (unsigned int i = 0; i < panoramas.size(); i++) {
+        glUniform1f(alphaUniform, panoramas[i]->opacity);
         panoramas[i]->draw(referencePoint);
     }
+
+    glUseProgram(0);
+    glDeleteProgram(program);
+    
 
     //Draw the player
     player.drawPlayer(referencePoint);

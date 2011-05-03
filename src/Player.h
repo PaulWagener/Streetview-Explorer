@@ -22,7 +22,7 @@ public:
     struct utmPosition location;
     float target_rotation;
     float rotation;
-    float height;
+    float height, target_height;
 
     //Camera position
     struct cam {

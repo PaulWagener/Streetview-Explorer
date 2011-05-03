@@ -1,10 +1,3 @@
-/* 
- * File:   Panorama.cpp
- * Author: paulwagener
- * 
- * Created on 25 maart 2011, 17:01
- */
-
 #include "Panorama.h"
 #include "string.h"
 #include "stdio.h"

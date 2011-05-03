@@ -1,10 +1,3 @@
-/* 
- * File:   Explorer.h
- * Author: paulwagener
- *
- * Created on 12 april 2011, 19:24
- */
-
 #include "Panorama.h"
 #include "Player.h"
 

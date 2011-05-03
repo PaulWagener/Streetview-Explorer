@@ -1,10 +1,3 @@
-/* 
- * File:   Panorama.h
- * Author: paulwagener
- *
- * Created on 25 maart 2011, 17:01
- */
-
 #ifndef PANORAMA_H
 #define	PANORAMA_H
 

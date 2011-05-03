@@ -1,12 +1,6 @@
-/* 
- * File:   Settings.cpp
- * Author: paulwagener
- * 
- * Created on 23 april 2011, 17:11
- */
-
 #include "Settings.h"
 #include <stdio.h>
+
 Settings settings;
 
 /**

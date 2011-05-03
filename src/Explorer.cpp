@@ -1,10 +1,3 @@
-/* 
- * File:   Explorer.cpp
- * Author: paulwagener
- * 
- * Created on 12 april 2011, 19:24
- */
-
 #include "Explorer.h"
 #include "gl.h"
 #include "stdio.h"

@@ -1,10 +1,3 @@
-/* 
- * File:   GLCanvas.h
- * Author: paulwagener
- *
- * Created on 16 april 2011, 22:16
- */
-
 #ifndef GLCANVAS_H
 #define	GLCANVAS_H
 

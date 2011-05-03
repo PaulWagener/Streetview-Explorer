@@ -1,10 +1,3 @@
-/* 
- * File:   download.h
- * Author: paulwagener
- *
- * Created on 3 april 2011, 12:43
- */
-
 #ifndef DOWNLOAD_H
 #define	DOWNLOAD_H
 

@@ -1,10 +1,3 @@
-/* 
- * File:   Settings.h
- * Author: paulwagener
- *
- * Created on 23 april 2011, 17:11
- */
-
 #ifndef SETTINGS_H
 #define	SETTINGS_H
 

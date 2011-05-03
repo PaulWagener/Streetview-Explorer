@@ -1,10 +1,3 @@
-/* 
- * File:   common.h
- * Author: paulwagener
- *
- * Created on 9 april 2011, 13:30
- */
-
 #ifndef COMMON_H
 #define	COMMON_H
 

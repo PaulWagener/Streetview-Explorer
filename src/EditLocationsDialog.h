@@ -1,10 +1,3 @@
-/* 
- * File:   EditLocationsDialog.h
- * Author: paulwagener
- *
- * Created on 22 april 2011, 18:07
- */
-
 #ifndef EDITLOCATIONSDIALOG_H
 #define	EDITLOCATIONSDIALOG_H
 

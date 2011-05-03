@@ -1,19 +1,12 @@
-/* 
- * File:   Frames.cpp
- * Author: paulwagener
- * 
- * Created on 16 april 2011, 22:20
- */
-
 #include "MainFrame.h"
-
-using namespace std;
-
 #include "GLCanvas.h"
 #include "Panorama.h"
 #include "EditLocationsDialog.h"
 #include "Settings.h"
 #include "PreferencesDialog.h"
+
+using namespace std;
+
 
 #define DEFAULT_WIDTH 800
 #define DEFAULT_HEIGHT 600

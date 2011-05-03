@@ -1,10 +1,3 @@
-/* 
- * File:   PreferencesDialog.cpp
- * Author: paulwagener
- * 
- * Created on 24 april 2011, 14:56
- */
-
 #include "PreferencesDialog.h"
 #include "Settings.h"
 

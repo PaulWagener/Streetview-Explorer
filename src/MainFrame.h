@@ -1,10 +1,3 @@
-/* 
- * File:   Frames.h
- * Author: paulwagener
- *
- * Created on 16 april 2011, 22:20
- */
-
 #ifndef FRAMES_H
 #define	FRAMES_H
 

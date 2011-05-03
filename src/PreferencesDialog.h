@@ -1,10 +1,3 @@
-/* 
- * File:   PreferencesDialog.h
- * Author: paulwagener
- *
- * Created on 24 april 2011, 14:56
- */
-
 #ifndef PREFERENCESDIALOG_H
 #define	PREFERENCESDIALOG_H
 

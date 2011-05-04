@@ -62,7 +62,7 @@ isStartingWithPanorama(false) {
     this->Center();
     this->Show();
 
-    StartWithPanorama("dU1D9CsdYTN-3YDiyyUSnQ");
+    StartWithPanorama("4R73SfAuIWfCCfnuIcHr3w");
 }
 
 void MainFrame::OnSetStatus(wxCommandEvent &event) {

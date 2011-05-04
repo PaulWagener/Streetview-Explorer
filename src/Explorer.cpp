@@ -105,6 +105,55 @@ void Explorer::updatePanoramas() {
     }
 
     Panorama *closestPanorama = getClosestPanorama();
+
+    //Allow player to jump to other panorama's without there being an explicit link between them.
+    //Looks up where in the panomap the player stands and looks up to which panorama that points belong
+    //If it isn't any of the adjacent ones load it up, with any luck it doesn't get deleted immediately because
+    //it is the new closest panorama
+    if (closestPanorama != NULL) {
+
+        //Get player location in texture coordinates of closest texture
+
+        //Vector to the player from the closest panorama origin
+        const float pv_x = player.location.northing - closestPanorama->location.northing;
+        const float pv_y = player.location.easting - closestPanorama->location.easting;
+        const float pv_z = player.height;
+
+        float elevation = pv_z / sqrt(pv_x * pv_x + pv_y * pv_y + pv_z * pv_z);
+        float azimuth = atan2(pv_y, pv_x);
+        if (azimuth < 0)
+            azimuth += TWICE_PI;
+        azimuth = azimuth / TWICE_PI * 360;
+        azimuth += (180 - closestPanorama->pano_yaw_deg);
+        while (azimuth > 360) azimuth -= 360;
+        while (azimuth < 0) azimuth += 360;
+
+        const int x = azimuth / (float) 360 * closestPanorama->mapWidth;
+        const int y = closestPanorama->mapHeight / 2 + -elevation * closestPanorama->mapHeight / 2;
+
+//        glPushMatrix();
+//        glTranslated(closestPanorama->location.easting - referencePoint.easting, closestPanorama->location.northing - referencePoint.northing, 0);
+//        glRotated(180 - closestPanorama->pano_yaw_deg, 0, 0, 1);
+//        glClear(GL_DEPTH_BUFFER_BIT);
+//        glColor3f(1, 0, 0);
+//        glPointSize(10);
+//        glBegin(GL_POINTS);
+//        closestPanorama->drawVertexAtAzimuthElevation(x, y, closestPanorama->compiledRenderSettings);
+
+        const int pano_index = closestPanorama->panomapIndices[y * closestPanorama->mapWidth + x];
+        const char* pano_id = closestPanorama->panoids[pano_index];
+        
+        if (pano_index != closestPanorama->ownPanomapIndex
+                && strlen(pano_id) == PANOID_LENGTH
+                && !closestPanorama->hasAdjacent(pano_id)) {
+            loadPanorama(pano_id, settings.zoomLevel);
+        }
+
+//        glEnd();
+//        glPopMatrix();
+    }
+
+
     //If no panorama's have yet been downloaded load the panorama that was given in the constructor
     if (panoramas.size() == 0) {
         loadPanorama(firstPanorama, settings.zoomLevel);
@@ -247,8 +296,8 @@ void Explorer::display(int width, int height) {
     glLinkProgram(program);
     glUseProgram(program);
     const int alphaUniform = glGetUniformLocation(program, "alpha");
-    
-    
+
+
     /**
      * Draw the background, this is from the panorama the closest
      * to the camera because it has the best perspective
@@ -263,12 +312,11 @@ void Explorer::display(int width, int height) {
         if (oldClosestPanorama == NULL)
             oldClosestPanorama = closestPanorama;
 
-        //If another panorama is
+        //If another panorama is fading away draw that over the current one with a faded opacity
         if (oldClosestPanorama != closestPanorama && oldClosestPanorama != NULL) {
-            //glColor4f(1, 1, 1, oldClosestOpacity);
+
             glUniform1f(alphaUniform, oldClosestOpacity);
             oldClosestPanorama->draw(referencePoint, true);
-            glColor4f(1, 1, 1, 1);
             glClear(GL_DEPTH_BUFFER_BIT);
 
             //Fade
@@ -278,6 +326,7 @@ void Explorer::display(int width, int height) {
                 oldClosestPanorama = closestPanorama;
             }
         }
+
     }
 
     //Draw all other panorama's (including the closest just to fill the depth buffer)
@@ -288,7 +337,7 @@ void Explorer::display(int width, int height) {
 
     glUseProgram(0);
     glDeleteProgram(program);
-    
+
 
     //Draw the player
     player.drawPlayer(referencePoint);

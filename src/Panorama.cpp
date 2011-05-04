@@ -159,7 +159,7 @@ bool Panorama::isTransparant(int x, int y, int horizontal_step) {
 }
 
 void Panorama::drawActual(struct utmPosition referencePoint, bool drawAll, struct renderSettings settings) {
-        glPushMatrix();
+    glPushMatrix();
     glTranslated(location.easting - referencePoint.easting, location.northing - referencePoint.northing, 0);
     glRotated(180 - pano_yaw_deg, 0, 0, 1);
 
@@ -310,6 +310,7 @@ void Panorama::draw(struct utmPosition referencePoint, bool drawAll) {
         //Recreate display list for 'all data' panorama
         renderSettings.transparancy = false;
         glNewList(threeSixtyCompileList, GL_COMPILE);
+        glColor3f(1, 1, 1);
         drawActual(referencePoint, true, renderSettings);
         glEndList();
 
@@ -337,8 +338,6 @@ void Panorama::drawVertexAtAzimuthElevation(int x, int y, struct renderSettings 
     //Set vertex transparancy
     if (settings.transparancy)
         glColor4d(1, 1, 1, isTransparant(x, y, settings.horizontalDetail) ? 0 : 1);
-    else
-        glColor4d(1, 1, 1, 1);
 
 
     float rad_azimuth = x / (float) (mapWidth - 1.0f) * TWICE_PI;
@@ -382,13 +381,13 @@ void Panorama::loadFromCache(const char *pano_id, int zoom_level) {
     getCacheFilename(pano_id, zoom_level, cachefile);
 
     FILE *f = fopen(cachefile, "rb");
-    if(!f)
+    if (!f)
         throw "Could not open cachefile";
 
     char version;
     int imageOffset;
-    fread(&version, sizeof(version), 1, f);
-    if(version != CACHEFILE_VERSION)
+    fread(&version, sizeof (version), 1, f);
+    if (version != CACHEFILE_VERSION)
         throw "Unexpected cachefile version...";
 
     fread(&imageOffset, sizeof (imageOffset), 1, f);
@@ -578,7 +577,12 @@ void Panorama::loadXML(const char *xml) {
         memcpy(&panomapIndices[0], &pano_map[panoIndicesOffset], mapWidth * mapHeight);
 
         //Load pano-ids
+        //Remember: the panoids array is 0-indexed,
+        //while the pano id's in panomapIndices are 1-indexed (0 being reserved for sky)
+        //Don't forget to subtract 1 from the index when accessing panoids!
         const int panoid_offset = panoIndicesOffset + mapWidth*mapHeight;
+//        printf("%d\n", numPanos);
+//        exit(0);
         memset(&panoids, '\0', (PANOID_LENGTH + 1) * numPanos); //Makes sure all strings are properly \0 terminated
         for (int i = 0; i < numPanos; i++) {
             memcpy(&panoids[i], &pano_map[panoid_offset + PANOID_LENGTH * i], PANOID_LENGTH);
@@ -662,7 +666,7 @@ void Panorama::downloadAndCache(const char* pano_id, int zoom_level) {
             throw "Unable to open cache file";
 
         //Write version
-        fwrite(&CACHEFILE_VERSION, sizeof(CACHEFILE_VERSION), 1, f);
+        fwrite(&CACHEFILE_VERSION, sizeof (CACHEFILE_VERSION), 1, f);
 
         //Write offset
         const int imageOffset = sizeof (char) + 2 * sizeof (int) +xmlData->size(); //Image begins after a char and 2 int plus the size of the xmlData

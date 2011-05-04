@@ -1,8 +1,11 @@
-#include "Panorama.h"
-#include "Player.h"
-
 #ifndef EXPLORER_H
 #define	EXPLORER_H
+
+#include "Panorama.h"
+#include "Player.h"
+#include <vector>
+
+using namespace std;
 
 /**
  * Explorer is the main class for the actual 'game'.
@@ -32,7 +35,7 @@ private:
     Panorama* getPanoramaById(const char* pano_id);
     Panorama* getClosestPanorama();
     
-    std::vector<Panorama*> panoramas;
+    vector<Panorama*> panoramas;
     void updatePanoramas();
 
     bool glInitialized;

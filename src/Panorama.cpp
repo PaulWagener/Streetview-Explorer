@@ -310,10 +310,8 @@ void Panorama::draw(struct utmPosition referencePoint, bool drawAll) {
         //Recreate display list for 'all data' panorama
         renderSettings.transparancy = false;
         glNewList(threeSixtyCompileList, GL_COMPILE);
-        glColor3f(1, 1, 1);
         drawActual(referencePoint, true, renderSettings);
         glEndList();
-
 
         compiledRenderSettings = renderSettings;
     }
@@ -422,7 +420,7 @@ void Panorama::loadFromCache(const char *pano_id, int zoom_level) {
 
         //Uncompress image
         unsigned long size = width * height * 3;
-        uncompressed_image.reserve(size);
+        uncompressed_image.resize(size);
         texture_width = width;
         texture_height = height;
         int code = uncompress(&uncompressed_image[0], &size, &compressed_image[0], compressedImageSize);

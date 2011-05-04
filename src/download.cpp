@@ -7,7 +7,7 @@
 
 #define USER_AGENT "StreetView Explorer 1.0"
 
-size_t write_download_data(void *ptr, size_t size, size_t nmemb, std::vector<unsigned char>* b) throw () {
+size_t write_download_data(void *ptr, size_t size, size_t nmemb, std::vector<unsigned char>* b) {
     size_t oldSize = b->size();
     try {
         b->resize(b->size() + size * nmemb);

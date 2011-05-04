@@ -38,7 +38,7 @@ bool Application::OnInit() {
     wxImage::AddHandler(new wxPNGHandler);
 
 #if __WXMSW__
-    SetStdOutToNewConsole();
+    //SetStdOutToNewConsole();
 #endif
 
 #if __WXMAC__

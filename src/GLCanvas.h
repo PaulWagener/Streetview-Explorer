@@ -2,6 +2,7 @@
 #define	GLCANVAS_H
 
 #include <wx/wx.h>
+#include "gl.h"
 #include <wx/glcanvas.h>
 #include "Explorer.h"
 

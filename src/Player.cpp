@@ -60,7 +60,7 @@ void Player::moveMouse(int x, int y) {
 void Player::mouseWheel(int delta) {
     const int MIN_ZOOM = 7;
     const int MAX_ZOOM = 50;
-    const float ZOOM_RATE = 0.1;
+    const float ZOOM_RATE = 0.1f;
 
     cam.target_distance -= delta * ZOOM_RATE;
 
@@ -200,7 +200,6 @@ void Player::drawBox(const float width, const float depth, const float height) {
  */
 void Player::drawPlayer(struct utmPosition reference) {
 
-    glUseProgram(0);
     glPushMatrix();
     glTranslated(location.easting - reference.easting, location.northing - reference.northing, height);
     glRotatef(target_rotation, 0, 0, -1);

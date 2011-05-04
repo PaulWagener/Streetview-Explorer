@@ -49,7 +49,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>CURL_STATICLIB;_ITERATOR_DEBUG_LEVEL=0;WIN32;_WINDOWS;WINVER=0x0400;__WXMSW__;wxUSE_GUI=1;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;CURL_STATICLIB;_ITERATOR_DEBUG_LEVEL=0;WIN32;_WINDOWS;WINVER=0x0400;__WXMSW__;wxUSE_GUI=1;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -58,7 +58,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>./lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>jpeg.lib;wxzlib.lib;wxpng.lib;ws2_32.lib;winmm.lib;curl.lib;wxbase29u.lib;wxmsw29u_core.lib;wxmsw29u_gl.lib;comctl32.lib;rpcrt4.lib;advapi32.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>jpeg.lib;glew32s.lib;wxzlib.lib;wxpng.lib;ws2_32.lib;winmm.lib;curl.lib;wxbase29u.lib;wxmsw29u_core.lib;wxmsw29u_gl.lib;comctl32.lib;rpcrt4.lib;advapi32.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -69,7 +69,7 @@
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>CURL_STATICLIB;_ITERATOR_DEBUG_LEVEL=0;WIN32;_WINDOWS;WINVER=0x0400;__WXMSW__;wxUSE_GUI=1;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;CURL_STATICLIB;_ITERATOR_DEBUG_LEVEL=0;WIN32;_WINDOWS;WINVER=0x0400;__WXMSW__;wxUSE_GUI=1;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE</PreprocessorDefinitions>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <AdditionalIncludeDirectories>include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -78,7 +78,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>jpeg.lib;wxzlib.lib;wxpng.lib;ws2_32.lib;winmm.lib;curl.lib;wxbase29u.lib;wxmsw29u_core.lib;wxmsw29u_gl.lib;comctl32.lib;rpcrt4.lib;advapi32.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>jpeg.lib;glew32s.lib;wxzlib.lib;wxpng.lib;ws2_32.lib;winmm.lib;curl.lib;wxbase29u.lib;wxmsw29u_core.lib;wxmsw29u_gl.lib;comctl32.lib;rpcrt4.lib;advapi32.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT.lib</IgnoreSpecificDefaultLibraries>
       <AdditionalLibraryDirectories>./lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
@@ -99,6 +99,7 @@
     <ClCompile Include="..\src\Player.cpp" />
     <ClCompile Include="..\src\PreferencesDialog.cpp" />
     <ClCompile Include="..\src\Settings.cpp" />
+    <ClCompile Include="..\src\statustext.cpp" />
     <ClCompile Include="..\src\Utm.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -115,6 +116,8 @@
     <ClInclude Include="..\src\Player.h" />
     <ClInclude Include="..\src\PreferencesDialog.h" />
     <ClInclude Include="..\src\Settings.h" />
+    <ClInclude Include="..\src\statustext.h" />
+    <ClInclude Include="..\src\title.png.h" />
     <ClInclude Include="..\src\Utm.h" />
   </ItemGroup>
   <ItemGroup>

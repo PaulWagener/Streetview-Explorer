@@ -9,7 +9,7 @@ using namespace std;
 
 
 #define PANOID_LENGTH 22
-#define CACHE_FILENAME_LENGTH 3 + PANOID_LENGTH
+#define CACHE_FILENAME_LENGTH 20 + PANOID_LENGTH
 
 struct depthMapPlane {
     float x, y, z;

@@ -7,7 +7,8 @@
 #else
 
 #include <Windows.h>
-#include <gl/GL.h>
-#include <gl/GLU.h>
+#define sleep(x) Sleep(x*1000)
+
+#include <glew.h>
 
 #endif

@@ -32,6 +32,10 @@ isStartingWithPanorama(false) {
 
     mainframe = this;
 
+#if __WXMSW__
+	SetIcon(wxICON(aa_icon));
+#endif
+
     //Set up menu
     wxMenu *fileMenu = new wxMenu();
     fileMenu->Append(MENU_BACKTOMAIN, "&Go to main screen");
@@ -62,7 +66,7 @@ isStartingWithPanorama(false) {
     this->Center();
     this->Show();
 
-    //StartWithPanorama("4R73SfAuIWfCCfnuIcHr3w");
+    StartWithPanorama("4R73SfAuIWfCCfnuIcHr3w");
 }
 
 void MainFrame::OnSetStatus(wxCommandEvent &event) {
@@ -237,6 +241,7 @@ void MainFrame::ShowMain() {
     combobox = new wxChoice(mainPanel, COMBOBOX_LOCATIONS, wxDefaultPosition, wxSize(300, -1));
     sizer->Add(combobox, 0, wxALIGN_CENTER | wxALL, 5);
     RefillLocations();
+	combobox->SetSelection(0);
 
     //Buttons
     wxBoxSizer *buttonsSizer = new wxBoxSizer(wxHORIZONTAL);

@@ -18,7 +18,7 @@ enum {
  * @param frame
  */
 EditLocationsDialog::EditLocationsDialog(wxWindow *frame)
-: wxDialog(frame, WINDOW_EDITLOCATIONS, "Edit Locations", wxDefaultPosition, wxSize(600, 300), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER),
+: wxDialog(frame, WINDOW_EDITLOCATIONS, "Edit Locations", wxDefaultPosition, wxSize(700, 300), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER),
 editing(false) {
 
     //GUI controls
@@ -42,8 +42,6 @@ editing(false) {
     buttonSizer->Add(removeButton, 0, wxALIGN_CENTER | wxALL, 5);
     buttonSizer->Add(upButton, 0, wxALIGN_CENTER | wxALL, 5);
     buttonSizer->Add(downButton, 0, wxALIGN_CENTER | wxALL, 5);
-    buttonSizer->AddSpacer(50);
-    buttonSizer->Add(new wxStaticText(this, wxID_ANY, "Double click on an item to edit the name", wxDefaultPosition, wxSize(100, 200), wxALIGN_CENTRE), 0, wxEXPAND);
     sizer->Add(buttonSizer, 0, wxALL | wxEXPAND, 5);
 
     this->SetSizer(sizer);

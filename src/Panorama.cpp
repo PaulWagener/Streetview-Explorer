@@ -12,7 +12,10 @@
 #include "Settings.h"
 #include <string>
 #include <locale.h>
+#include "statustext.h"
 using namespace std;
+
+const char Panorama::CACHEFILE_VERSION = 1;
 
 /**
  * Will load the specified panorama either from disk or from Google
@@ -34,9 +37,31 @@ opacity(0) {
     if (!isCached(pano_id, zoom_level))
         Panorama::downloadAndCache(pano_id, zoom_level);
 
-    loadFromCache(pano_id, zoom_level);
+    try {
+        loadFromCache(pano_id, zoom_level);
+    } catch(const char* error) {
+        char cachefile[CACHE_FILENAME_LENGTH+1];
+        getCacheFilename(pano_id, zoom_level, cachefile);
 
+        setStatus("Error loading cachefile '%s' (%s). Deleting it...", cachefile, error);
+        unlink(cachefile);
+        sleep(1);
+        setStatus("");
 
+        throw error;
+    }
+}
+
+Panorama::~Panorama() {
+    //Delete resources we allocated in OpenGL
+    if (glLoaded) {
+        glDeleteTextures(1, &texture_id);
+
+        if (compileList != -1) {
+            glDeleteLists(compileList, 1);
+            glDeleteLists(threeSixtyCompileList, 1);
+        }
+    }
 }
 
 void Panorama::getCacheFilename(const char* pano_id, int zoom_level, char filename[]) {
@@ -56,28 +81,9 @@ bool Panorama::hasAdjacent(const char *pano_id) {
     return false;
 }
 
-/**
- * returns the pano_id that is closest in the direction specified.
- * Or NULL in the unlikely case that this panorama isn't adjacent to anything
- *
- * @param direction in the range [0-360]
- * @return
- */
-const char* Panorama::getPanoIdInDirection(float direction) {
-    if(links.size() == 0)
-        return NULL;
-
-    float min_degrees_diff = 360;
-    char *min_panorama = NULL;
-    for(unsigned int i = 0; i < links.size(); i++) {
-        float diff = min( fabs(direction-links[i].yaw_deg), fabs(direction - (links[i].yaw_deg -360) ));
-
-        if(diff < min_degrees_diff) {
-            min_degrees_diff = diff;
-            min_panorama = (char*)&links[i].pano_id;
-        }
-    }
-    return min_panorama;
+float Panorama::getGroundHeight() {
+    int groundIndex = depthmapIndices[mapHeight * mapWidth - 1];
+    return depthmapPlanes[groundIndex].d;
 }
 
 /**
@@ -335,7 +341,7 @@ void Panorama::drawVertexAtAzimuthElevation(int x, int y, struct renderSettings 
         glColor4d(1, 1, 1, 1);
 
 
-        float rad_azimuth = x / (float) (mapWidth - 1.0f) * TWICE_PI;
+    float rad_azimuth = x / (float) (mapWidth - 1.0f) * TWICE_PI;
     float rad_elevation = y / (float) (mapHeight - 1.0f) * PI;
 
     //Calculate the cartesian position of this vertex (if it was at unit distance)
@@ -376,13 +382,19 @@ void Panorama::loadFromCache(const char *pano_id, int zoom_level) {
     getCacheFilename(pano_id, zoom_level, cachefile);
 
     FILE *f = fopen(cachefile, "rb");
-    int xmlOffset, imageOffset;
-    fread(&xmlOffset, sizeof (xmlOffset), 1, f);
+    if(!f)
+        throw "Could not open cachefile";
+
+    char version;
+    int imageOffset;
+    fread(&version, sizeof(version), 1, f);
+    if(version != CACHEFILE_VERSION)
+        throw "Unexpected cachefile version...";
+
     fread(&imageOffset, sizeof (imageOffset), 1, f);
 
     //Read in XML data
     {
-        fseek(f, xmlOffset, SEEK_SET);
         int xmlSize;
         fread(&xmlSize, sizeof (xmlSize), 1, f);
 
@@ -425,12 +437,10 @@ void Panorama::loadFromCache(const char *pano_id, int zoom_level) {
     fclose(f);
     /**
      * File format:
-     * int      xmlOffset
+     * char     version
      * int      imageOffset
-     *
-     * at xmlOffset:
-     *   int size of xml contents
-     *   xml contents of Google panorama description (not \0 terminated)
+     * int size of xml contents
+     * xml contents of Google panorama description (not \0 terminated)
      *
      * at imageOffset:
      *   int    width
@@ -454,14 +464,20 @@ void Panorama::loadXML(const char *xml) {
     setlocale(LC_ALL, "C");
 
     //Scan the data properties
-    sscanf(strstr(xml, "<data_properties"),
+    int found = sscanf(strstr(xml, "<data_properties"),
             "<data_properties image_width=\"%d\" image_height=\"%d\" tile_width=\"%d\" tile_height=\"%d\" pano_id=\"%[_-A-Za-z0-9]\" num_zoom_levels=\"%d\" lat=\"%f\" lng=\"%f\" original_lat=\"%f\" original_lng=\"%f\">",
             &image_width, &image_height, &tile_width, &tile_height, (char*) &pano_id, &num_zoom_levels, &lat, &lng, &original_lat, &original_lng);
 
+    if (found != 10)
+        throw "Unexpected <data_properties> data";
+
     //Scan the projection properties
-    sscanf(strstr(xml, "<projection_properties"),
+    found = sscanf(strstr(xml, "<projection_properties"),
             "<projection_properties projection_type=\"spherical\" pano_yaw_deg=\"%f\" tilt_yaw_deg=\"%f\" tilt_pitch_deg=\"%f\"",
             &pano_yaw_deg, &tilt_yaw_deg, &tilt_pitch_deg);
+
+    if (found != 3)
+        throw "Unexpected <projection_properties> data";
 
     //Read in the <link> data (just the yaw and id part)
     struct link link;
@@ -493,7 +509,8 @@ void Panorama::loadXML(const char *xml) {
         int compressed_length = decode_base64(&depth_map_compressed[0], &depth_map_base64[0]);
 
         //Uncompress data with zlib
-        unsigned long length = 512 * 256 + 5000; //TODO: decompress in a loop so we can accept any size
+        //TODO: decompress in a loop so we can accept any size 
+        unsigned long length = 512 * 256 + 5000;
         vector<unsigned char> depth_map(length);
         int zlib_return = uncompress(&depth_map[0], &length, &depth_map_compressed[0], compressed_length);
         if (zlib_return != Z_OK)
@@ -576,8 +593,7 @@ void Panorama::loadXML(const char *xml) {
 }
 
 /**
- * Initialize this panorama with data straight from Google.
- * This method also caches the data to a file called 'cache/<pano_id>.pano'
+ * Download all datafiles that are needed for this panorama and cache them in a file half-processed
  * @return
  */
 void Panorama::downloadAndCache(const char* pano_id, int zoom_level) {
@@ -594,15 +610,14 @@ void Panorama::downloadAndCache(const char* pano_id, int zoom_level) {
     const int height = ZOOM0_HEIGHT * 1 << zoom_level;
 
     //Create texture
-    vector<unsigned char> pano_image;
-    pano_image.reserve(width * height * 3);
+    vector<unsigned char> pano_image(width * height * 3);
 
     //Download each individual tile and compose them into the big texture
     for (int tile_y = 0; tile_y < ceil(height / (float) TILE_HEIGHT); tile_y++) {
         for (int tile_x = 0; tile_x < ceil(width / (float) TILE_WIDTH); tile_x++) {
 
             //Download tile in RGB format
-            char url[100];
+            char url[150];
             sprintf((char*) &url, "http://cbk0.google.com/cbk?output=tile&panoid=%s&zoom=%d&x=%d&y=%d", pano_id, zoom_level, tile_x, tile_y);
             struct image_block tile = download_jpeg(url);
 
@@ -633,24 +648,24 @@ void Panorama::downloadAndCache(const char* pano_id, int zoom_level) {
 
     //Cache the panorama to a file
     {
-        char cachefile[CACHE_FILENAME_LENGTH + 1];
-        getCacheFilename(pano_id, zoom_level, cachefile);
-
-        FILE *f = fopen(cachefile, "wb");
-
-        if (!f)
-            throw "Unable to open cache file";
-
-        //Write offsets
-        const int xmlOffset = 2 * sizeof (int); //xml data begins after 2 int offsets
-        fwrite(&xmlOffset, sizeof (xmlOffset), 1, f);
-
         //Download xml data
         char xml_url[100];
         sprintf(xml_url, "http://maps.google.com/cbk?output=xml&panoid=%s&dm=1&pm=1", pano_id);
         const std::auto_ptr<std::vector<unsigned char> > xmlData = download(xml_url);
 
-        int imageOffset = 3 * sizeof (int) +xmlData->size(); //Image begins after 3 int offsets plus the size of the xmlData
+        //Open cache file
+        char cachefile[CACHE_FILENAME_LENGTH + 1];
+        getCacheFilename(pano_id, zoom_level, cachefile);
+
+        FILE *f = fopen(cachefile, "wb");
+        if (!f)
+            throw "Unable to open cache file";
+
+        //Write version
+        fwrite(&CACHEFILE_VERSION, sizeof(CACHEFILE_VERSION), 1, f);
+
+        //Write offset
+        const int imageOffset = sizeof (char) + 2 * sizeof (int) +xmlData->size(); //Image begins after a char and 2 int plus the size of the xmlData
         fwrite(&imageOffset, sizeof (imageOffset), 1, f);
 
         //Write xml data
@@ -661,17 +676,15 @@ void Panorama::downloadAndCache(const char* pano_id, int zoom_level) {
             fwrite(&(*xmlData)[0], 1, xmlData->size(), f);
         }
 
-        //Write the image data
+        //Write the image metadata
         fwrite(&width, sizeof (width), 1, f);
         fwrite(&height, sizeof (height), 1, f);
-
 
         //Compress the image and write it to the file
         vector<unsigned char> compressed_pano;
         compressed_pano.reserve(compressBound(height * width * 3));
 
         unsigned long size = height * width * 3;
-
         compress(&compressed_pano[0], &size, (const Bytef*) &pano_image[0], size);
 
         fwrite(&size, sizeof (size), 1, f);
@@ -724,16 +737,4 @@ void Panorama::loadGL() {
     uncompressed_image.clear();
 
     glLoaded = true;
-}
-
-Panorama::~Panorama() {
-    //Delete resources we allocated in OpenGL
-    if (glLoaded) {
-        glDeleteTextures(1, &texture_id);
-
-        if (compileList != -1) {
-            glDeleteLists(compileList, 1);
-            glDeleteLists(threeSixtyCompileList, 1);
-        }
-    }
 }

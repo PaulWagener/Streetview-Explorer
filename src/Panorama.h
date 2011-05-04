@@ -57,6 +57,8 @@ public:
     bool hasAdjacent(const char *pano_id);
     const char* getPanoIdInDirection(float direction);
 
+    float getGroundHeight();
+
     //Depth map information
     int mapWidth, mapHeight;
     vector<unsigned char> depthmapIndices;
@@ -68,6 +70,8 @@ public:
     int ownPanomapIndex;
 
     vector<struct link> links;
+
+    static const char CACHEFILE_VERSION;
 
     //Texture information
     unsigned int texture_width, texture_height;

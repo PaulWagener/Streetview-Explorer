@@ -1,5 +1,6 @@
 #include "GLCanvas.h"
 #include <wx/wx.h>
+#include "statustext.h"
 
 #if __WXMAC__
 #include <ApplicationServices/ApplicationServices.h>
@@ -92,7 +93,8 @@ void GLCanvas::OnMouseDown(wxMouseEvent& event) {
         capture = true;
         trap_x = event.m_x;
         trap_y = event.m_y;
-        WarpPointer(trap_x, trap_y);
+        //WarpPointer(trap_x, trap_y);
+        setStatus("Press <esc> to release the mouse again...");
     }
 }
 
@@ -109,10 +111,10 @@ void GLCanvas::OnMouseWheel(wxMouseEvent& event) {
  * @param event
  */
 void GLCanvas::OnKeyDown(wxKeyEvent& event) {
-    if (event.m_keyCode == 'W') explorer.player.keys.forward = true;
-    if (event.m_keyCode == 'S') explorer.player.keys.backward = true;
-    if (event.m_keyCode == 'A') explorer.player.keys.strafe_left = true;
-    if (event.m_keyCode == 'D') explorer.player.keys.strafe_right = true;
+    if (event.m_keyCode == 'W' || event.m_keyCode == WXK_UP) explorer.player.keys.forward = true;
+    if (event.m_keyCode == 'S' || event.m_keyCode == WXK_DOWN) explorer.player.keys.backward = true;
+    if (event.m_keyCode == 'A' || event.m_keyCode == WXK_LEFT) explorer.player.keys.strafe_left = true;
+    if (event.m_keyCode == 'D' || event.m_keyCode == WXK_RIGHT) explorer.player.keys.strafe_right = true;
     if (event.m_keyCode == 'Q') explorer.player.keys.rotate_left = true;
     if (event.m_keyCode == 'E') explorer.player.keys.rotate_right = true;
 
@@ -122,10 +124,10 @@ void GLCanvas::OnKeyDown(wxKeyEvent& event) {
 }
 
 void GLCanvas::OnKeyUp(wxKeyEvent& event) {
-    if (event.m_keyCode == 'W') explorer.player.keys.forward = false;
-    if (event.m_keyCode == 'S') explorer.player.keys.backward = false;
-    if (event.m_keyCode == 'A') explorer.player.keys.strafe_left = false;
-    if (event.m_keyCode == 'D') explorer.player.keys.strafe_right = false;
+    if (event.m_keyCode == 'W' || event.m_keyCode == WXK_UP) explorer.player.keys.forward = false;
+    if (event.m_keyCode == 'S' || event.m_keyCode == WXK_DOWN) explorer.player.keys.backward = false;
+    if (event.m_keyCode == 'A' || event.m_keyCode == WXK_LEFT) explorer.player.keys.strafe_left = false;
+    if (event.m_keyCode == 'D' || event.m_keyCode == WXK_RIGHT) explorer.player.keys.strafe_right = false;
     if (event.m_keyCode == 'Q') explorer.player.keys.rotate_left = false;
     if (event.m_keyCode == 'E') explorer.player.keys.rotate_right = false;
 }

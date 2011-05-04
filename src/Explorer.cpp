@@ -254,9 +254,7 @@ void Explorer::display(int width, int height) {
      * to the camera because it has the best perspective
      */
     if (closestPanorama != NULL) {
-        int gh = closestPanorama->depthmapIndices[closestPanorama->mapHeight * closestPanorama->mapWidth - 1];
-        float g = closestPanorama->depthmapPlanes[gh].d;
-        player.target_height = -g;
+        player.target_height = -closestPanorama->getGroundHeight();
 
         glUniform1f(alphaUniform, 1);
         closestPanorama->draw(referencePoint, true);
@@ -307,7 +305,9 @@ void Explorer::downloadThread() {
         downloadedPano = p;
         setStatus(""); //Reset the status text, we loaded the panorama succesfully
     } catch (const char* c) {
-        setStatus("Exception caught: %s", c);
+        sleep(1); //Allow to see what the last message was
+        setStatus("Error: %s", c);
+        sleep(2); //Allow to see the error
     }
     downloading = false;
 }

@@ -81,7 +81,7 @@ void Player::targetCamera(struct utmPosition reference) {
     cam.elevation = cam.target_elevation + (cam.elevation - cam.target_elevation) / 1.3f;
     cam.distance = cam.target_distance + (cam.distance - cam.target_distance) / 1.1f;
     rotation = target_rotation + (rotation - target_rotation) / 1.18f;
-    height = target_height + (height - target_height) / 1.001f;
+    height = target_height + (height - target_height) / 1.1f;
     
     cam.location.northing = location.northing + cos((180 + rotation) * RADIAL) * cos(cam.elevation * RADIAL) * cam.distance;
     cam.location.easting = location.easting + sin((180 + rotation) * RADIAL) * cos(cam.elevation * RADIAL) * cam.distance;

@@ -5,6 +5,8 @@
 #include <jerror.h>
 #include <curl/curl.h>
 
+#define USER_AGENT "StreetView Explorer 1.0"
+
 size_t write_download_data(void *ptr, size_t size, size_t nmemb, std::vector<unsigned char>* b) throw () {
     size_t oldSize = b->size();
     try {
@@ -32,6 +34,8 @@ std::auto_ptr<std::vector<unsigned char> > download(const char *url) {
     curl_easy_setopt(curl, CURLOPT_URL, url);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_download_data);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, b.get());
+    curl_easy_setopt(curl, CURLOPT_USERAGENT, USER_AGENT);
+
 
     CURLcode res = curl_easy_perform(curl);
     curl_easy_cleanup(curl);

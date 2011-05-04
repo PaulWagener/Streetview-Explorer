@@ -1,5 +1,6 @@
 #include "MainFrame.h"
 #include "Application.h"
+#include <wx/stdpaths.h>
 
 #if __WXMAC__
 #include <ApplicationServices/ApplicationServices.h>
@@ -26,6 +27,11 @@ void SetStdOutToNewConsole() {
 #endif
 
 bool Application::OnInit() {
+    //Set the working directory to a place where it is suitable to place data files
+    wxString dataDir = wxStandardPaths::Get().GetDataDir();
+    wxMkDir(dataDir, 0755);
+    wxSetWorkingDirectory(dataDir);
+    
     //Make sure there is a cache directory in the working directory
     ::wxMkDir(wxString("cache"), 0755);
     

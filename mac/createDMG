@@ -1,0 +1,6 @@
+#!/bin/sh
+rf -rf /StreetView\ Explorer.dmg
+rm -rf /StreetView\ Explorer.app/Contents/Shared\ Support
+cp dist/Release/GNU-MacOSX/mac StreetView\ Explorer.app/Contents/MacOS/streetview-explorer
+./buildDMG.pl StreetView\ Explorer.app
+

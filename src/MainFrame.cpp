@@ -62,7 +62,7 @@ isStartingWithPanorama(false) {
     this->Center();
     this->Show();
 
-    StartWithPanorama("4R73SfAuIWfCCfnuIcHr3w");
+    //StartWithPanorama("4R73SfAuIWfCCfnuIcHr3w");
 }
 
 void MainFrame::OnSetStatus(wxCommandEvent &event) {
@@ -208,6 +208,8 @@ void MainFrame::StartWithPanorama(const char* pano_id) {
     event.SetString(pano_id);
     wxPostEvent(this, event);
 }
+#include "title.png.h"
+#include <wx/mstream.h>
 
 /**
  * Fill the frame with the mainscreen controls
@@ -219,13 +221,14 @@ void MainFrame::ShowMain() {
     sizer->AddStretchSpacer(1);
 
     //Horizontally centered title image
-    if (wxFileExists("title.png")) {
-        wxBoxSizer *titleSizer = new wxBoxSizer(wxHORIZONTAL);
-        titleSizer->AddStretchSpacer(1);
-        titleSizer->Add(new wxStaticBitmap(mainPanel, wxID_ANY, wxBitmap("title.png", wxBITMAP_TYPE_PNG)));
-        titleSizer->AddStretchSpacer(1);
-        sizer->Add(titleSizer, 0, wxEXPAND);
-    }
+    wxBoxSizer *titleSizer = new wxBoxSizer(wxHORIZONTAL);
+    titleSizer->AddStretchSpacer(1);
+
+    wxMemoryInputStream title_png_is(title_png, sizeof (title_png));
+    titleSizer->Add(new wxStaticBitmap(mainPanel, wxID_ANY, wxBitmap(title_png_is, wxBITMAP_TYPE_PNG)));
+    titleSizer->AddStretchSpacer(1);
+    sizer->Add(titleSizer, 0, wxEXPAND);
+
 
     //Some space between combobox and title
     sizer->AddSpacer(30);

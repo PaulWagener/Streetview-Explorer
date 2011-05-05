@@ -18,7 +18,6 @@ X11BASE ?= /usr/X11R6
 LOCALBASE ?= /usr/local
 
 RM ?= rm -f
-CXXFLAGS += -ggdb3 -O0 -W -Wall
 CPPFLAGS += -I${X11BASE}/include -I${LOCALBASE}/include
 CPPFLAGS += `wx-config --cxxflags`
 LDADD += -L${X11BASE}/lib -L${LOCALBASE}/lib

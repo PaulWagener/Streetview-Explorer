@@ -28,10 +28,36 @@ enum {
     TEXTBOX_PASTE_LINK
 };
 
+/*
+ * Recursively clean out the contents of dir.
+ */
+static bool
+clear_dir(wxString path)
+{
+	if (!wxDirExists(path)) {
+		return false;
+	}
+
+	wxString glob = path + wxString::FromAscii("/*");
+
+	/* Remove all files. */
+	for (wxString fname = wxFindFirstFile(glob, wxFILE); !fname.empty(); fname = wxFindNextFile()) {
+		if (!wxRemoveFile(fname))
+			return false;
+	}
+
+	/* Remove all directories. */
+	for (wxString fname = wxFindFirstFile(glob, wxDIR); !fname.empty(); fname = wxFindNextFile()) {
+		if (!clear_dir(fname) || !wxRmdir(fname))
+			return false;
+	}
+	return true;
+}
+
 wxPanel *mainPanel;
 
 MainFrame::MainFrame()
-: wxFrame(NULL, wxID_ANY, "StreetView Explorer", wxDefaultPosition, wxSize(DEFAULT_WIDTH, DEFAULT_HEIGHT)),
+: wxFrame(NULL, wxID_ANY, wxString::FromAscii("StreetView Explorer"), wxDefaultPosition, wxSize(DEFAULT_WIDTH, DEFAULT_HEIGHT)),
 isStartingWithPanorama(false) {
 
     mainframe = this;
@@ -42,14 +68,14 @@ isStartingWithPanorama(false) {
 
     //Set up menu
     wxMenu *fileMenu = new wxMenu();
-    fileMenu->Append(MENU_BACKTOMAIN, "&Go to main screen");
-    fileMenu->Append(MENU_CLEARCACHE, "&Clear  cache");
-    fileMenu->Append(wxID_PREFERENCES, "&Preferences");
-    fileMenu->Append(wxID_ABOUT, "&About...");
-    fileMenu->Append(wxID_EXIT, "E&xit");
+    fileMenu->Append(MENU_BACKTOMAIN, wxString::FromAscii("&Go to main screen"));
+    fileMenu->Append(MENU_CLEARCACHE, wxString::FromAscii("&Clear  cache"));
+    fileMenu->Append(wxID_PREFERENCES, wxString::FromAscii("&Preferences"));
+    fileMenu->Append(wxID_ABOUT, wxString::FromAscii("&About..."));
+    fileMenu->Append(wxID_EXIT, wxString::FromAscii("E&xit"));
 
     wxMenuBar *menuBar = new wxMenuBar();
-    menuBar->Append(fileMenu, "&File");
+    menuBar->Append(fileMenu, wxString::FromAscii("&File"));
     SetMenuBar(menuBar);
 
     statusbar = new wxStatusBar(this);
@@ -75,17 +101,18 @@ isStartingWithPanorama(false) {
     //StartWithPanorama("4R73SfAuIWfCCfnuIcHr3w");
 }
 
-void MainFrame::OnClearCache(wxMenuEvent &event) {
-    double sizeMB = wxDir::GetTotalSize("cache").ToDouble() / 1024 / 1024;
+void MainFrame::OnClearCache(wxMenuEvent &) {
+    double sizeMB = wxDir::GetTotalSize(wxString::FromAscii("cache")).ToDouble() / 1024 / 1024;
     char question[200];
-    sprintf(question, "Are you sure you want to delete %.2fMB of Street View cache images?", sizeMB);
-    int answer = wxMessageBox(question, "Clear cache", wxYES_NO | wxCANCEL, this);
+    snprintf(question, sizeof(question) / sizeof(question[0]), "Are you sure you want to delete %.2fMB of Street View cache images?", sizeMB); 
+    int answer = wxMessageBox(wxString::FromAscii(question), wxString::FromAscii("Clear cache"), wxYES_NO | wxCANCEL, this);
 
     //Recreate cache directory
     if (answer == wxYES) {
-        wxDir::Remove("cache", wxPATH_RMDIR_RECURSIVE);
-        wxMkDir("cache", 0755);
-        wxMessageBox("Cache deleted");
+        if (clear_dir(wxString::FromAscii("cache")))
+            wxMessageBox(wxString::FromAscii("Cache deleted"));
+        else
+            wxMessageBox(wxString::FromAscii("Failed to clear cache"));
     }
 }
 
@@ -98,7 +125,7 @@ void MainFrame::OnSetStatus(wxCommandEvent &event) {
  * with an OpenGL window with the actual game.
  */
 void MainFrame::OnPanoramaStart(wxCommandEvent &event) {
-    glCanvas = new GLCanvas(mainPanel, (const char*) event.GetString());
+    glCanvas = new GLCanvas(mainPanel, event.GetString().char_str());
     wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
     sizer->Add(glCanvas, 1, wxEXPAND);
     ReplaceSizer(sizer);
@@ -110,7 +137,7 @@ void MainFrame::OnPanoramaStart(wxCommandEvent &event) {
  * 
  * @param event
  */
-void MainFrame::OnGoToMainScreen(wxMenuEvent &event) {
+void MainFrame::OnGoToMainScreen(wxMenuEvent &) {
     ShowMain();
 }
 
@@ -132,8 +159,8 @@ void MainFrame::OnPreferences(wxMenuEvent& WXUNUSED(event)) {
  * @param
  */
 void MainFrame::OnAbout(wxMenuEvent& WXUNUSED(event)) {
-    wxMessageBox("This application is brought to you by Paul Wagener.\nhttp://code.google.com/p/streetview-explorer\nSpecial thanks to Ariane and the helpful people at #wxwidgets",
-            "About StreetView Explorer",
+    wxMessageBox(wxString::FromAscii("This application is brought to you by Paul Wagener.\nhttp://code.google.com/p/streetview-explorer\nSpecial thanks to Ariane and the helpful people at #wxwidgets"),
+            wxString::FromAscii("About StreetView Explorer"),
             wxOK | wxICON_INFORMATION, this);
 }
 
@@ -149,7 +176,7 @@ void MainFrame::OnQuit(wxMenuEvent& WXUNUSED(event)) {
  * When the user selects a location go directly to the 3D view
  * @param event
  */
-void MainFrame::OnSelectLocation(wxCommandEvent &event) {
+void MainFrame::OnSelectLocation(wxCommandEvent &) {
     const int selection = combobox->GetSelection();
 
     //Ignore first 'pick a destination' entry
@@ -164,7 +191,7 @@ void MainFrame::OnSelectLocation(wxCommandEvent &event) {
  * Show a modal dialog where the user can edit his favorite locations
  * @param event
  */
-void MainFrame::OnEditLocations(wxCommandEvent &event) {
+void MainFrame::OnEditLocations(wxCommandEvent &) {
     //Edit locations dialog
     EditLocationsDialog *editLocations = new EditLocationsDialog(this);
     editLocations->ShowModal();
@@ -187,7 +214,7 @@ void MainFrame::OnLinkPaste(wxCommandEvent &event) {
 
     wxString link = event.GetString();
 
-    int g = link.find("&panoid=");
+    int g = link.find(wxString::FromAscii("&panoid="));
     if (g == -1)
         return;
 
@@ -197,7 +224,7 @@ void MainFrame::OnLinkPaste(wxCommandEvent &event) {
         return;
 
     isStartingWithPanorama = true;
-    StartWithPanorama((const char*) pasted_panoID);
+    StartWithPanorama(pasted_panoID.char_str());
 }
 
 /**
@@ -206,9 +233,9 @@ void MainFrame::OnLinkPaste(wxCommandEvent &event) {
 void MainFrame::RefillLocations() {
     combobox->Clear();
 
-    combobox->Append("<Pick a destination>");
+    combobox->Append(wxString::FromAscii("<Pick a destination>"));
     for (unsigned int i = 0; i < settings.locations.size(); i++)
-        combobox->Append(settings.locations[i].name);
+        combobox->Append(wxString::FromAscii(settings.locations[i].name));
 
 }
 
@@ -221,7 +248,7 @@ void MainFrame::RefillLocations() {
  */
 void MainFrame::StartWithPanorama(const char* pano_id) {
     wxCommandEvent event(myEVT_PANORAMA_START, GetId());
-    event.SetString(pano_id);
+    event.SetString(wxString::FromAscii(pano_id));
     wxPostEvent(this, event);
 }
 #include "title.png.h"
@@ -257,13 +284,13 @@ void MainFrame::ShowMain() {
 
     //Buttons
     wxBoxSizer *buttonsSizer = new wxBoxSizer(wxHORIZONTAL);
-    buttonsSizer->Add(new wxButton(mainPanel, BUTTON_EDIT_LOCATIONS, "Edit destinations"));
+    buttonsSizer->Add(new wxButton(mainPanel, BUTTON_EDIT_LOCATIONS, wxString::FromAscii("Edit destinations")));
 
     sizer->Add(buttonsSizer, 0, wxALIGN_CENTER | wxALL, 5);
 
     //TextCtrl user can paste in
     sizer->AddSpacer(50);
-    sizer->Add(new wxTextCtrl(mainPanel, TEXTBOX_PASTE_LINK, "Or paste a Google StreetView link here...", wxDefaultPosition, wxSize(400, 50), wxTE_CENTER), 0, wxALIGN_CENTER);
+    sizer->Add(new wxTextCtrl(mainPanel, TEXTBOX_PASTE_LINK, wxString::FromAscii("Or paste a Google StreetView link here..."), wxDefaultPosition, wxSize(400, 50), wxTE_CENTER), 0, wxALIGN_CENTER);
 
     //Space below
     sizer->AddStretchSpacer(1);

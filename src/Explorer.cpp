@@ -208,7 +208,11 @@ void Explorer::display(int width, int height) {
     if (!glInitialized) {
 
 #ifdef __GLEWINIT__
-        glewInit();
+        GLenum glew_err;
+        if ((glew_err = glewInit()) != GLEW_OK) {
+            fprintf(stderr, "Error: %s\n", glewGetErrorString(glew_err));
+            exit(1);
+	}
 #endif
 
         glShadeModel(GL_SMOOTH);

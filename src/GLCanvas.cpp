@@ -22,7 +22,7 @@ void* ExplorerHelperThread::Entry() {
     return NULL;
 }
 
-const int args[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16};
+int args[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16};
 
 /**
  * Set up an OpenGL Canvas which the Explorer class can draw in
@@ -140,15 +140,15 @@ void GLCanvas::disableCapture() {
     this->SetCursor(wxCURSOR_DEFAULT);
 }
 
-void GLCanvas::OnResize(wxSizeEvent& evt) {
+void GLCanvas::OnResize(wxSizeEvent&) {
     Refresh();
 }
 
-void GLCanvas::OnTimer(wxTimerEvent& event) {
+void GLCanvas::OnTimer(wxTimerEvent&) {
     Refresh();
 }
 
-void GLCanvas::OnPaint(wxPaintEvent& evt) {
+void GLCanvas::OnPaint(wxPaintEvent&) {
     if (!IsShown())
         return;
 

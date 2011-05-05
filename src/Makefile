@@ -30,8 +30,8 @@ RM ?= rm -f
 CPPFLAGS += -I${X11BASE}/include -I${LOCALBASE}/include
 CPPFLAGS += `wx-config --cxxflags`
 LDADD += -L${X11BASE}/lib -L${LOCALBASE}/lib
-LDADD += -lGL -lGLU -lwx_gtk2_gl -lcurl
-LDADD += `wx-config --libs`
+LDADD += -lGL -lGLU -lcurl
+LDADD += `wx-config --libs gl`
 OBJS = ${SRCS:M*.cpp:R:S/$/.o/g}
 
 .SUFFIXES: .cpp .o

@@ -399,7 +399,7 @@ void Panorama::loadFromCache(const char *pano_id, int zoom_level) {
         std::vector<char> xmlData(xmlSize);
         fread(&xmlData[0], xmlSize, 1, f);
 	xmlData.push_back('\0');
-        loadXML((const char*) &xmlData[0]);
+        loadXML(&xmlData[0]);
     }
 
     //Read in image
@@ -464,7 +464,7 @@ void Panorama::loadXML(const char *xml) {
     //Scan the data properties
     int found = sscanf(strstr(xml, "<data_properties"),
             "<data_properties image_width=\"%d\" image_height=\"%d\" tile_width=\"%d\" tile_height=\"%d\" pano_id=\"%[_-A-Za-z0-9]\" num_zoom_levels=\"%d\" lat=\"%f\" lng=\"%f\" original_lat=\"%f\" original_lng=\"%f\">",
-            &image_width, &image_height, &tile_width, &tile_height, (char*) &pano_id, &num_zoom_levels, &lat, &lng, &original_lat, &original_lng);
+            &image_width, &image_height, &tile_width, &tile_height, &pano_id[0], &num_zoom_levels, &lat, &lng, &original_lat, &original_lng);
 
     if (found != 10)
         throw "Unexpected <data_properties> data";
@@ -672,7 +672,7 @@ void Panorama::downloadAndCache(const char* pano_id, int zoom_level) {
 
         //Write xml data
         {
-            assert(xmlData->size() < (1ULL << 32));
+            assert(xmlData->size() < (1ULL << 31));
             const int size = xmlData->size();
             fwrite(&size, sizeof (size), 1, f);
             fwrite(&(*xmlData)[0], 1, xmlData->size(), f);

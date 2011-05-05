@@ -7,13 +7,13 @@ void setStatus(const char *newStatus, ...) {
 
     // Try to print in the allocated space.
     va_start(parms, newStatus);
-    vsprintf(newStatusPrinted, newStatus, parms);
+    vsnprintf(newStatusPrinted, sizeof(newStatusPrinted) / sizeof(newStatusPrinted[0]), newStatus, parms);
     va_end(parms);
 
 
     if (MainFrame::mainframe != NULL) {
         wxCommandEvent event(myEVT_SET_STATUS, wxID_ANY);
-        event.SetString(newStatusPrinted);
+        event.SetString(wxString::FromAscii(newStatusPrinted));
         wxPostEvent(MainFrame::mainframe, event);
     }
 }

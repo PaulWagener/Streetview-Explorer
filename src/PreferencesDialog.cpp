@@ -24,26 +24,26 @@ enum {
  * @param parent
  */
 PreferencesDialog::PreferencesDialog(wxWindow *parent)
- : wxDialog(parent, wxID_ANY, "Preferences", wxDefaultPosition, wxSize(400, 200), wxCAPTION | wxCLOSE_BOX | wxFRAME_FLOAT_ON_PARENT){
+ : wxDialog(parent, wxID_ANY, wxString::FromAscii("Preferences"), wxDefaultPosition, wxSize(400, 200), wxCAPTION | wxCLOSE_BOX | wxFRAME_FLOAT_ON_PARENT){
     wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
     wxFlexGridSizer *fgs = new wxFlexGridSizer(2, 9, 15);
 
-    fgs->Add(new wxStaticText(this, wxID_ANY, "Vertical texture accuracy"));
+    fgs->Add(new wxStaticText(this, wxID_ANY, wxString::FromAscii("Vertical texture accuracy")));
     fgs->Add(new wxSlider(this, SLIDER_VERTICAL_ACC, settings.vertical_accuracy, VERTICAL_ACC_BEST, VERTICAL_ACC_FASTEST, wxDefaultPosition, wxDefaultSize, wxSL_LABELS | wxSL_INVERSE), 1, wxEXPAND);
 
-    fgs->Add(new wxStaticText(this, wxID_ANY, "Horizontal model accuracy"));
+    fgs->Add(new wxStaticText(this, wxID_ANY, wxString::FromAscii("Horizontal model accuracy")));
     fgs->Add(new wxSlider(this, SLIDER_HORIZONTAL_ACC, settings.horizontal_accuracy, HORIZONTAL_ACC_BEST, HORIZONTAL_ACC_FASTEST, wxDefaultPosition, wxDefaultSize, wxSL_LABELS | wxSL_INVERSE), 1, wxEXPAND);
 
-    fgs->Add(new wxStaticText(this, wxID_ANY, "Detail level"));
+    fgs->Add(new wxStaticText(this, wxID_ANY, wxString::FromAscii("Detail level")));
     fgs->Add(new wxSlider(this, SLIDER_ZOOM_LEVEL, settings.zoom_level, ZOOM_LEVEL_MIN, ZOOM_LEVEL_MAX, wxDefaultPosition, wxDefaultSize, wxSL_LABELS), 1, wxEXPAND);
 
-    fgs->Add(new wxStaticText(this, wxID_ANY, "Mipmapping"));
-    wxCheckBox *mipmappingCheckbox = new wxCheckBox(this, CHECKBOX_MIPMAPPING, "");
+    fgs->Add(new wxStaticText(this, wxID_ANY, wxString::FromAscii("Mipmapping")));
+    wxCheckBox *mipmappingCheckbox = new wxCheckBox(this, CHECKBOX_MIPMAPPING, wxString::FromAscii(""));
     mipmappingCheckbox->SetValue(settings.mipmapping == 1);
     fgs->Add(mipmappingCheckbox);
 
-    fgs->Add(new wxStaticText(this, wxID_ANY, "Wireframe"));
-    wxCheckBox *wireframeCheckbox = new wxCheckBox(this, CHECKBOX_WIREFRAME, "");
+    fgs->Add(new wxStaticText(this, wxID_ANY, wxString::FromAscii("Wireframe")));
+    wxCheckBox *wireframeCheckbox = new wxCheckBox(this, CHECKBOX_WIREFRAME, wxString::FromAscii(""));
     wireframeCheckbox->SetValue(settings.wireframe == 1);
     fgs->Add(wireframeCheckbox);
 

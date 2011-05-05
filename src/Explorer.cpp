@@ -203,7 +203,7 @@ void Explorer::display(int width, int height) {
 
     if (!glInitialized) {
 
-#if __GLEWINIT__
+#ifdef __GLEWINIT__
         glewInit();
 #endif
 

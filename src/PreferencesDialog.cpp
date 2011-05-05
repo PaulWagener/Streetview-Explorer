@@ -39,12 +39,12 @@ PreferencesDialog::PreferencesDialog(wxWindow *parent)
 
     fgs->Add(new wxStaticText(this, wxID_ANY, "Mipmapping"));
     wxCheckBox *mipmappingCheckbox = new wxCheckBox(this, CHECKBOX_MIPMAPPING, "");
-    mipmappingCheckbox->SetValue(settings.mipmapping);
+    mipmappingCheckbox->SetValue(settings.mipmapping == 1);
     fgs->Add(mipmappingCheckbox);
 
     fgs->Add(new wxStaticText(this, wxID_ANY, "Wireframe"));
     wxCheckBox *wireframeCheckbox = new wxCheckBox(this, CHECKBOX_WIREFRAME, "");
-    wireframeCheckbox->SetValue(settings.wireframe);
+    wireframeCheckbox->SetValue(settings.wireframe == 1);
     fgs->Add(wireframeCheckbox);
 
 

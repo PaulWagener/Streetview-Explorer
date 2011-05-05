@@ -4,12 +4,12 @@
 #include <OpenGL/glu.h>
 #include <GLUT/glut.h>
 
-#elif __WXWIN__
+#elif __WXMSW__
 
 #include <Windows.h>
 #define sleep(x) Sleep(x*1000)
-#include <glew.h>
 
+#include <glew.h>
 #define __GLEWINIT__
 
 #else

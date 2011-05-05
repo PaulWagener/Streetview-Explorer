@@ -24,7 +24,7 @@ enum {
  * @param parent
  */
 PreferencesDialog::PreferencesDialog(wxWindow *parent)
- : wxDialog(parent, wxID_ANY, wxString::FromAscii("Preferences"), wxDefaultPosition, wxSize(400, 200), wxCAPTION | wxCLOSE_BOX | wxFRAME_FLOAT_ON_PARENT){
+ : wxDialog(parent, wxID_ANY, wxString::FromAscii("Preferences"), wxDefaultPosition, wxSize(500, 250), wxCAPTION | wxCLOSE_BOX | wxFRAME_FLOAT_ON_PARENT){
     wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
     wxFlexGridSizer *fgs = new wxFlexGridSizer(2, 9, 15);
 
@@ -63,7 +63,6 @@ PreferencesDialog::PreferencesDialog(wxWindow *parent)
     Connect(SLIDER_ZOOM_LEVEL, wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(PreferencesDialog::OnScroll));
     Connect(CHECKBOX_MIPMAPPING, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(PreferencesDialog::OnCheckbox));
     Connect(CHECKBOX_WIREFRAME, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(PreferencesDialog::OnCheckbox));
-    this->Fit();
 }
 
 /**

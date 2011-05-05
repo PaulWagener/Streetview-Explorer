@@ -104,7 +104,7 @@ isStartingWithPanorama(false) {
 void MainFrame::OnClearCache(wxMenuEvent &) {
     double sizeMB = wxDir::GetTotalSize(wxString::FromAscii("cache")).ToDouble() / 1024 / 1024;
     char question[200];
-    snprintf(question, sizeof(question) / sizeof(question[0]), "Are you sure you want to delete %.2fMB of Street View cache images?", sizeMB); 
+    sprintf(question, "Are you sure you want to delete %.2fMB of Street View cache images?", sizeMB); 
     int answer = wxMessageBox(wxString::FromAscii(question), wxString::FromAscii("Clear cache"), wxYES_NO | wxCANCEL, this);
 
     //Recreate cache directory

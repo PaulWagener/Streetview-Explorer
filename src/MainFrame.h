@@ -23,6 +23,7 @@ private:
 
     bool isStartingWithPanorama;
 
+	void OnClearCache(wxMenuEvent &event);
     void OnGoToMainScreen(wxMenuEvent &event);
     void OnAbout(wxMenuEvent& WXUNUSED(event));
     void OnPreferences(wxMenuEvent& WXUNUSED(event));

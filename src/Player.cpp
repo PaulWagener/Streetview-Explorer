@@ -60,7 +60,7 @@ void Player::moveMouse(int x, int y) {
 void Player::mouseWheel(int delta) {
     const int MIN_ZOOM = 7;
     const int MAX_ZOOM = 50;
-    const float ZOOM_RATE = 0.1f;
+    const float ZOOM_RATE = 0.03f;
 
     cam.target_distance -= delta * ZOOM_RATE;
 

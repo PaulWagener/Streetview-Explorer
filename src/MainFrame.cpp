@@ -4,6 +4,8 @@
 #include "EditLocationsDialog.h"
 #include "Settings.h"
 #include "PreferencesDialog.h"
+#include <wx/dir.h>
+#include <wx/filename.h>
 
 using namespace std;
 
@@ -18,7 +20,8 @@ MainFrame* MainFrame::mainframe = NULL;
 
 enum {
     COMBOBOX_LOCATIONS = wxID_HIGHEST,
-    MENU_BACKTOMAIN,
+    MENU_FILE,
+	MENU_BACKTOMAIN,
     MENU_CLEARCACHE,
     BUTTON_EDIT_LOCATIONS,
     BUTTON_LAST_LOCATION,
@@ -38,9 +41,9 @@ isStartingWithPanorama(false) {
 #endif
 
     //Set up menu
-    wxMenu *fileMenu = new wxMenu();
+	wxMenu *fileMenu = new wxMenu();
     fileMenu->Append(MENU_BACKTOMAIN, "&Go to main screen");
-    fileMenu->Append(MENU_CLEARCACHE, "&Clear  cache (??? MB)");
+    fileMenu->Append(MENU_CLEARCACHE, "&Clear  cache");
     fileMenu->Append(wxID_PREFERENCES, "&Preferences");
     fileMenu->Append(wxID_ABOUT, "&About...");
     fileMenu->Append(wxID_EXIT, "E&xit");
@@ -55,6 +58,7 @@ isStartingWithPanorama(false) {
     mainPanel = new wxPanel(this);
 
     //Event handlers
+	Connect(MENU_CLEARCACHE, wxEVT_COMMAND_MENU_SELECTED, wxMenuEventHandler(MainFrame::OnClearCache));
     Connect(MENU_BACKTOMAIN, wxEVT_COMMAND_MENU_SELECTED, wxMenuEventHandler(MainFrame::OnGoToMainScreen));
     Connect(wxID_PREFERENCES, wxEVT_COMMAND_MENU_SELECTED, wxMenuEventHandler(MainFrame::OnPreferences));
     Connect(wxID_ABOUT, wxEVT_COMMAND_MENU_SELECTED, wxMenuEventHandler(MainFrame::OnAbout));
@@ -69,6 +73,20 @@ isStartingWithPanorama(false) {
     this->Show();
 
     //StartWithPanorama("4R73SfAuIWfCCfnuIcHr3w");
+}
+#include "statustext.h"
+void MainFrame::OnClearCache(wxMenuEvent &event) {
+	double sizeMB = wxDir::GetTotalSize("cache").ToDouble() / 1024 / 1024;
+	char question[200];
+	sprintf(question, "Are you sure you want to delete %.2fMB of Street View cache images?", sizeMB); 
+	int answer = wxMessageBox(question, "Clear cache", wxYES_NO | wxCANCEL, this);
+
+	//Recreate cache directory
+	if(answer == wxYES) {
+		wxDir::Remove("cache", wxPATH_RMDIR_RECURSIVE);
+		wxMkDir("cache", 0755);
+		wxMessageBox("Cache deleted");
+	}
 }
 
 void MainFrame::OnSetStatus(wxCommandEvent &event) {

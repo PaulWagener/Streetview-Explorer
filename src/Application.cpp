@@ -32,7 +32,7 @@ bool Application::OnInit() {
     wxMkDir(dataDir, 0755);
     wxSetWorkingDirectory(dataDir);
     //wxMessageBox(dataDir);
-
+	
     //Load settings
     settings = Settings();
     

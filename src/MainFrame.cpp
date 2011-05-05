@@ -4,11 +4,11 @@
 #include "EditLocationsDialog.h"
 #include "Settings.h"
 #include "PreferencesDialog.h"
+#include "statustext.h"
 #include <wx/dir.h>
 #include <wx/filename.h>
 
 using namespace std;
-
 
 #define DEFAULT_WIDTH 800
 #define DEFAULT_HEIGHT 600
@@ -21,7 +21,7 @@ MainFrame* MainFrame::mainframe = NULL;
 enum {
     COMBOBOX_LOCATIONS = wxID_HIGHEST,
     MENU_FILE,
-	MENU_BACKTOMAIN,
+    MENU_BACKTOMAIN,
     MENU_CLEARCACHE,
     BUTTON_EDIT_LOCATIONS,
     BUTTON_LAST_LOCATION,
@@ -37,11 +37,11 @@ isStartingWithPanorama(false) {
     mainframe = this;
 
 #if __WXMSW__
-	SetIcon(wxICON(aa_icon));
+    SetIcon(wxICON(aa_icon));
 #endif
 
     //Set up menu
-	wxMenu *fileMenu = new wxMenu();
+    wxMenu *fileMenu = new wxMenu();
     fileMenu->Append(MENU_BACKTOMAIN, "&Go to main screen");
     fileMenu->Append(MENU_CLEARCACHE, "&Clear  cache");
     fileMenu->Append(wxID_PREFERENCES, "&Preferences");
@@ -58,7 +58,7 @@ isStartingWithPanorama(false) {
     mainPanel = new wxPanel(this);
 
     //Event handlers
-	Connect(MENU_CLEARCACHE, wxEVT_COMMAND_MENU_SELECTED, wxMenuEventHandler(MainFrame::OnClearCache));
+    Connect(MENU_CLEARCACHE, wxEVT_COMMAND_MENU_SELECTED, wxMenuEventHandler(MainFrame::OnClearCache));
     Connect(MENU_BACKTOMAIN, wxEVT_COMMAND_MENU_SELECTED, wxMenuEventHandler(MainFrame::OnGoToMainScreen));
     Connect(wxID_PREFERENCES, wxEVT_COMMAND_MENU_SELECTED, wxMenuEventHandler(MainFrame::OnPreferences));
     Connect(wxID_ABOUT, wxEVT_COMMAND_MENU_SELECTED, wxMenuEventHandler(MainFrame::OnAbout));
@@ -74,19 +74,19 @@ isStartingWithPanorama(false) {
 
     //StartWithPanorama("4R73SfAuIWfCCfnuIcHr3w");
 }
-#include "statustext.h"
-void MainFrame::OnClearCache(wxMenuEvent &event) {
-	double sizeMB = wxDir::GetTotalSize("cache").ToDouble() / 1024 / 1024;
-	char question[200];
-	sprintf(question, "Are you sure you want to delete %.2fMB of Street View cache images?", sizeMB); 
-	int answer = wxMessageBox(question, "Clear cache", wxYES_NO | wxCANCEL, this);
 
-	//Recreate cache directory
-	if(answer == wxYES) {
-		wxDir::Remove("cache", wxPATH_RMDIR_RECURSIVE);
-		wxMkDir("cache", 0755);
-		wxMessageBox("Cache deleted");
-	}
+void MainFrame::OnClearCache(wxMenuEvent &event) {
+    double sizeMB = wxDir::GetTotalSize("cache").ToDouble() / 1024 / 1024;
+    char question[200];
+    sprintf(question, "Are you sure you want to delete %.2fMB of Street View cache images?", sizeMB);
+    int answer = wxMessageBox(question, "Clear cache", wxYES_NO | wxCANCEL, this);
+
+    //Recreate cache directory
+    if (answer == wxYES) {
+        wxDir::Remove("cache", wxPATH_RMDIR_RECURSIVE);
+        wxMkDir("cache", 0755);
+        wxMessageBox("Cache deleted");
+    }
 }
 
 void MainFrame::OnSetStatus(wxCommandEvent &event) {
@@ -253,7 +253,7 @@ void MainFrame::ShowMain() {
     combobox = new wxChoice(mainPanel, COMBOBOX_LOCATIONS, wxDefaultPosition, wxSize(300, -1));
     sizer->Add(combobox, 0, wxALIGN_CENTER | wxALL, 5);
     RefillLocations();
-	combobox->SetSelection(0);
+    combobox->SetSelection(0);
 
     //Buttons
     wxBoxSizer *buttonsSizer = new wxBoxSizer(wxHORIZONTAL);

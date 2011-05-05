@@ -96,13 +96,21 @@ void Explorer::updatePanoramas() {
 
     //Delete all active panorama's if the textures need to be reloaded due to changing settings
 
-    if(settings.zoom_level != currentZoomlevel || settings.mipmapping != currentMipmapping) {
-        for(unsigned int i = 0; i < panoramas.size(); i++) {
+    if (settings.zoom_level != currentZoomlevel || settings.mipmapping != currentMipmapping) {
+
+        //Make sure we initialize back at the panorama we were last standing
+        Panorama* closestPanorama = getClosestPanorama();
+        if(closestPanorama != NULL)
+            strcpy(firstPanorama, closestPanorama->pano_id);
+
+        for (unsigned int i = 0; i < panoramas.size(); i++) {
             delete panoramas[i];
         }
         panoramas.clear();
         currentZoomlevel = settings.zoom_level;
         currentMipmapping = settings.mipmapping;
+
+
     }
 
     //Load thread got a new panorama for us, add it to the official panorama list
@@ -146,7 +154,7 @@ void Explorer::updatePanoramas() {
         const int y = (int) (closestPanorama->mapHeight / 2 + -elevation * closestPanorama->mapHeight / 2) % closestPanorama->mapHeight;
 
         const int pano_index = closestPanorama->panomapIndices[y * closestPanorama->mapWidth + x];
-        const char* pano_id = closestPanorama->panoids[pano_index-1];
+        const char* pano_id = closestPanorama->panoids[pano_index - 1];
 
         if (pano_index != closestPanorama->ownPanomapIndex
                 && pano_index != 0
@@ -194,10 +202,6 @@ Panorama* Explorer::getPanoramaById(const char* pano_id) {
     }
     return NULL;
 }
-
-float hh = 0;
-
-int program;
 
 void Explorer::display(int width, int height) {
 
@@ -253,7 +257,7 @@ void Explorer::display(int width, int height) {
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45.0, width / (GLdouble) height, 1, 200.0);
+    gluPerspective(45.0, width / (GLdouble) height, 1, 300.0);
 
     /**
      * Coordinate system:
@@ -298,9 +302,8 @@ void Explorer::display(int width, int height) {
     }
 
     glColor3f(1, 1, 1);
-    ////
-    glUseProgram(program);
 
+    glUseProgram(program);
     const int alphaUniform = glGetUniformLocation(program, "alpha");
     glEnable(GL_TEXTURE_2D);
 

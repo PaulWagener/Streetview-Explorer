@@ -26,6 +26,8 @@ private:
     int currentMipmapping;
     int currentZoomlevel;
 
+    int program;
+
     //When walking
     Panorama *oldClosestPanorama;
     float oldClosestOpacity;

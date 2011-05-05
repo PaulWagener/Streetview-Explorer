@@ -82,6 +82,10 @@ bool Panorama::hasAdjacent(const char *pano_id) {
     return false;
 }
 
+/**
+ * Find out how high the ground is at 0,0 in this panorama (positive number in meters)
+ * @return
+ */
 float Panorama::getGroundHeight() {
     int groundIndex = depthmapIndices[mapHeight * mapWidth - 1];
     return depthmapPlanes[groundIndex].d;
@@ -245,10 +249,6 @@ void Panorama::drawActual(struct utmPosition referencePoint, bool drawAll, struc
                 drawVertexAtAzimuthElevation(next_x, y, settings);
                 drawVertexAtAzimuthElevation(x, y, settings);
             }
-
-            //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-
         }
         //Draw last vertex at the nadir / very bottom of panorama
         if (drawing) {
@@ -579,8 +579,7 @@ void Panorama::loadXML(const char *xml) {
         //while the pano id's in panomapIndices are 1-indexed (0 being reserved for sky)
         //Don't forget to subtract 1 from the index when accessing panoids!
         const int panoid_offset = panoIndicesOffset + mapWidth*mapHeight;
-//        printf("%d\n", numPanos);
-//        exit(0);
+
         memset(&panoids, '\0', (PANOID_LENGTH + 1) * numPanos); //Makes sure all strings are properly \0 terminated
         for (int i = 0; i < numPanos; i++) {
             memcpy(&panoids[i], &pano_map[panoid_offset + PANOID_LENGTH * i], PANOID_LENGTH);

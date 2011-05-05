@@ -8,8 +8,8 @@ Settings settings;
  */
 Settings::Settings() {
     //Default settings
-    horizontal_accuracy = 16;
-    vertical_accuracy = 10;
+    horizontal_accuracy = 2;
+    vertical_accuracy = 5;
     zoom_level = 2;
     wireframe = false;
     mipmapping = false;

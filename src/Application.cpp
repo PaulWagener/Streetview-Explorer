@@ -28,9 +28,10 @@ void SetStdOutToNewConsole() {
 
 bool Application::OnInit() {
     //Set the working directory to a place where it is suitable to place data files
-    wxString dataDir = wxStandardPaths::Get().GetDataDir();
+    wxString dataDir = wxStandardPaths::Get().GetUserDataDir();
     wxMkDir(dataDir, 0755);
     wxSetWorkingDirectory(dataDir);
+    wxMessageBox(dataDir);
     
     //Make sure there is a cache directory in the working directory
     ::wxMkDir(wxString("cache"), 0755);

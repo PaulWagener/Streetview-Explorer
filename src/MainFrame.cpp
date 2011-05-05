@@ -66,7 +66,7 @@ isStartingWithPanorama(false) {
     this->Center();
     this->Show();
 
-    StartWithPanorama("4R73SfAuIWfCCfnuIcHr3w");
+    //StartWithPanorama("4R73SfAuIWfCCfnuIcHr3w");
 }
 
 void MainFrame::OnSetStatus(wxCommandEvent &event) {
@@ -229,7 +229,7 @@ void MainFrame::ShowMain() {
     titleSizer->AddStretchSpacer(1);
 
     wxMemoryInputStream title_png_is(title_png, sizeof (title_png));
-    titleSizer->Add(new wxStaticBitmap(mainPanel, wxID_ANY, wxBitmap(title_png_is, wxBITMAP_TYPE_PNG)));
+    titleSizer->Add(new wxStaticBitmap(mainPanel, wxID_ANY, wxBitmap(wxImage(title_png_is, wxBITMAP_TYPE_PNG))));
     titleSizer->AddStretchSpacer(1);
     sizer->Add(titleSizer, 0, wxEXPAND);
 

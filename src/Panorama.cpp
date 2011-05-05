@@ -13,6 +13,7 @@
 #include <string>
 #include <locale.h>
 #include "statustext.h"
+#include <stdlib.h>
 using namespace std;
 
 const char Panorama::CACHEFILE_VERSION = 1;
@@ -431,7 +432,6 @@ void Panorama::loadFromCache(const char *pano_id, int zoom_level) {
         if (size != width * height * 3)
             throw "Unexpected size of uncompressed image";
     }
-    fclose(f);
     /**
      * File format:
      * char     version

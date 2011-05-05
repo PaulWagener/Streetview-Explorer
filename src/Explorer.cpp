@@ -6,6 +6,7 @@
 #include "Settings.h"
 #include <math.h>
 #include "statustext.h"
+#include <cstring>
 
 Explorer::Explorer(const char* firstPano) {
     requestDownloadThread = false;
@@ -187,7 +188,7 @@ void Explorer::display(int width, int height) {
     
     if (!glInitialized) {
 
-#if __WXMSW__
+#if __GLEWINIT__
 		glewInit();
 #endif
 

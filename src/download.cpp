@@ -1,6 +1,9 @@
 #include "download.h"
 #include "statustext.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <cstring>
 #include <jpeglib.h>
 #include <jerror.h>
 #include <curl/curl.h>

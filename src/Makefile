@@ -14,8 +14,17 @@ SRCS += common.cpp
 SRCS += download.cpp
 SRCS += statustext.cpp
 
+# X11 and package dirs.
 X11BASE ?= /usr/X11R6
 LOCALBASE ?= /usr/local
+
+# Install parameters.
+BINDIR ?= ${LOCALBASE}/bin
+BINOWN ?= root
+BINGRP ?= bin
+BINMODE ?= 555
+INSTALL_COPY ?= -c
+INSTALL_STRIP ?= -s
 
 RM ?= rm -f
 CPPFLAGS += -I${X11BASE}/include -I${LOCALBASE}/include
@@ -44,3 +53,7 @@ ${PROG}: ${OBJS}
 
 clean:
 	${RM} ${PROG} ${OBJS}
+
+install:
+	${INSTALL} ${INSTALL_COPY} ${INSTALL_STRIP} -o ${BINOWN} -g ${BINGRP} \
+	    -m ${BINMODE} ${PROG} ${DESTDIR}${BINDIR}/${PROG}

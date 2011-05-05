@@ -398,6 +398,7 @@ void Panorama::loadFromCache(const char *pano_id, int zoom_level) {
 
         std::vector<char> xmlData(xmlSize);
         fread(&xmlData[0], xmlSize, 1, f);
+	xmlData.push_back('\0');
         loadXML((const char*) &xmlData[0]);
     }
 

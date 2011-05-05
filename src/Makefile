@@ -32,17 +32,17 @@ CPPFLAGS += `wx-config --cxxflags`
 LDADD += -L${X11BASE}/lib -L${LOCALBASE}/lib
 LDADD += -lGL -lGLU -lcurl
 LDADD += `wx-config --libs gl`
-OBJS = ${SRCS:M*.cpp:R:S/$/.o/g}
+OBJS = ${SRCS:.cpp=.o}
 
 .SUFFIXES: .cpp .o
 
 all: ${PROG}
 
 .cpp.o:
-	${CXX} ${CPPFLAGS} ${CXXFLAGS} -o ${.TARGET} -c ${.IMPSRC}
+	${CXX} ${CPPFLAGS} ${CXXFLAGS} -o $@ -c $<
 
 depend:
-	@files="${SRCS:M*.cpp}"; \
+	@files="${SRCS}"; \
 	if [ "$$files" != "  " ]; then \
 	  echo mkdep -a ${MKDEP} ${CXXFLAGS:M-[ID]*} ${CPPFLAGS} $$files; \
 	  mkdep -a ${MKDEP} ${CXXFLAGS:M-[ID]*} ${CPPFLAGS} $$files; \

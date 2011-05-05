@@ -16,6 +16,9 @@ Explorer::Explorer(const char* firstPano) {
     oldClosestPanorama = NULL;
     oldClosestOpacity = 1;
 
+    currentMipmapping = settings.mipmapping;
+    currentZoomlevel = settings.zoom_level;
+
     glInitialized = false;
 
     //Temporarily store the first panorama we should load
@@ -88,9 +91,19 @@ Panorama* Explorer::getClosestPanorama() {
  * 
  */
 void Explorer::updatePanoramas() {
-    settings.numPanoramas = 5;
     if (downloading)
         return;
+
+    //Delete all active panorama's if the textures need to be reloaded due to changing settings
+
+    if(settings.zoom_level != currentZoomlevel || settings.mipmapping != currentMipmapping) {
+        for(unsigned int i = 0; i < panoramas.size(); i++) {
+            delete panoramas[i];
+        }
+        panoramas.clear();
+        currentZoomlevel = settings.zoom_level;
+        currentMipmapping = settings.mipmapping;
+    }
 
     //Load thread got a new panorama for us, add it to the official panorama list
     if (downloadedPano != NULL) {
@@ -116,8 +129,8 @@ void Explorer::updatePanoramas() {
         //Get player location in texture coordinates of closest texture
 
         //Vector to the player from the closest panorama origin
-        const float pv_x = (float)(player.location.northing - closestPanorama->location.northing);
-        const float pv_y = (float)(player.location.easting - closestPanorama->location.easting);
+        const float pv_x = (float) (player.location.northing - closestPanorama->location.northing);
+        const float pv_y = (float) (player.location.easting - closestPanorama->location.easting);
         const float pv_z = player.height;
 
         float elevation = pv_z / sqrt(pv_x * pv_x + pv_y * pv_y + pv_z * pv_z);
@@ -129,23 +142,24 @@ void Explorer::updatePanoramas() {
         while (azimuth > 360) azimuth -= 360;
         while (azimuth < 0) azimuth += 360;
 
-		const int x = (int)(azimuth / (float) 360 * closestPanorama->mapWidth) % closestPanorama->mapWidth;
-		const int y = (int)(closestPanorama->mapHeight / 2 + -elevation * closestPanorama->mapHeight / 2) % closestPanorama->mapHeight;
+        const int x = (int) (azimuth / (float) 360 * closestPanorama->mapWidth) % closestPanorama->mapWidth;
+        const int y = (int) (closestPanorama->mapHeight / 2 + -elevation * closestPanorama->mapHeight / 2) % closestPanorama->mapHeight;
 
         const int pano_index = closestPanorama->panomapIndices[y * closestPanorama->mapWidth + x];
-        const char* pano_id = closestPanorama->panoids[pano_index];
-        
+        const char* pano_id = closestPanorama->panoids[pano_index-1];
+
         if (pano_index != closestPanorama->ownPanomapIndex
+                && pano_index != 0
                 && strlen(pano_id) == PANOID_LENGTH
                 && !closestPanorama->hasAdjacent(pano_id)) {
-            loadPanorama(pano_id, settings.zoomLevel);
+            loadPanorama(pano_id, settings.zoom_level);
         }
     }
 
 
     //If no panorama's have yet been downloaded load the panorama that was given in the constructor
     if (panoramas.size() == 0) {
-        loadPanorama(firstPanorama, settings.zoomLevel);
+        loadPanorama(firstPanorama, settings.zoom_level);
     } else if (closestPanorama != NULL) {
 
         //First delete all panorama's that are not adjacent to the closest panorama
@@ -160,8 +174,8 @@ void Explorer::updatePanoramas() {
 
         //Then see if there are any adjacent panorama's not already loaded
         for (unsigned int i = 0; i < closestPanorama->links.size(); i++) {
-            if (!gotPanorama(closestPanorama->links[i].pano_id, settings.zoomLevel))
-                loadPanorama(closestPanorama->links[i].pano_id, settings.zoomLevel);
+            if (!gotPanorama(closestPanorama->links[i].pano_id, settings.zoom_level))
+                loadPanorama(closestPanorama->links[i].pano_id, settings.zoom_level);
         }
     }
 
@@ -184,15 +198,16 @@ Panorama* Explorer::getPanoramaById(const char* pano_id) {
 float hh = 0;
 
 int program;
+
 void Explorer::display(int width, int height) {
-    
+
     if (!glInitialized) {
 
 #if __GLEWINIT__
-		glewInit();
+        glewInit();
 #endif
 
-		glShadeModel(GL_SMOOTH);
+        glShadeModel(GL_SMOOTH);
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -212,23 +227,23 @@ void Explorer::display(int width, int height) {
         glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
         glLightfv(GL_LIGHT0, GL_POSITION, position);
 
-		
-    glEnable(GL_TEXTURE_2D);
-    glEnable(GL_CULL_FACE);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
+
+        glEnable(GL_TEXTURE_2D);
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
 
         const int fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-		const char *p = "uniform sampler2D tex;uniform float alpha; void main(){gl_FragColor = gl_Color * texture2D(tex, gl_TexCoord[0].xy);gl_FragColor.a = gl_Color.w*alpha;}";
+        const char *p = "uniform sampler2D tex;uniform float alpha; void main(){gl_FragColor = gl_Color * texture2D(tex, gl_TexCoord[0].xy);gl_FragColor.a = gl_Color.w*alpha;}";
         glShaderSource(fragment_shader, 1, &p, NULL);
         glCompileShader(fragment_shader);
 
-		program = glCreateProgram();
-		glAttachShader(program, fragment_shader);
-		glLinkProgram(program);
-		glUseProgram(program);
+        program = glCreateProgram();
+        glAttachShader(program, fragment_shader);
+        glLinkProgram(program);
+        glUseProgram(program);
 
-		glInitialized = true;
+        glInitialized = true;
     }
 
     updatePanoramas();
@@ -259,8 +274,8 @@ void Explorer::display(int width, int height) {
     glClearColor(1, 1, 1, 1);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	player.updatePosition();
-	glLoadIdentity();
+    player.updatePosition();
+    glLoadIdentity();
     player.targetCamera(referencePoint);
 
     if (settings.wireframe) {
@@ -282,12 +297,12 @@ void Explorer::display(int width, int height) {
             panoramas[i]->opacity = 1;
     }
 
-	glColor3f(1,1,1);
+    glColor3f(1, 1, 1);
     ////
     glUseProgram(program);
 
     const int alphaUniform = glGetUniformLocation(program, "alpha");
-	glEnable(GL_TEXTURE_2D);
+    glEnable(GL_TEXTURE_2D);
 
     /**
      * Draw the background, this is from the panorama the closest
@@ -296,7 +311,7 @@ void Explorer::display(int width, int height) {
     if (closestPanorama != NULL) {
         player.target_height = -closestPanorama->getGroundHeight();
 
-		glUniform1f(alphaUniform, 1);
+        glUniform1f(alphaUniform, 1);
         closestPanorama->draw(referencePoint, true);
         glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -327,7 +342,7 @@ void Explorer::display(int width, int height) {
     }
 
     glUseProgram(0);
-  
+
     //Draw the player
     player.drawPlayer(referencePoint);
 }
@@ -343,7 +358,7 @@ void Explorer::downloadThread() {
         downloadedPano = p;
         setStatus(""); //Reset the status text, we loaded the panorama succesfully
     } catch (const char* c) {
-		sleep(1); //Allow to see what the last message was
+        sleep(1); //Allow to see what the last message was
         setStatus("Error: %s", c);
         sleep(2); //Allow to see the error
     }

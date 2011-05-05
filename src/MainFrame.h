@@ -30,7 +30,6 @@ private:
 
     void OnSelectLocation(wxCommandEvent &event);
     void OnEditLocations(wxCommandEvent &event);
-    void OnLastLocation(wxCommandEvent &event);
     void OnLinkPaste(wxCommandEvent &event);
 
     void OnPanoramaStart(wxCommandEvent &event);

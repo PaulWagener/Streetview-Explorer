@@ -23,6 +23,9 @@ private:
     bool downloading;
     Panorama *downloadedPano;
 
+    int currentMipmapping;
+    int currentZoomlevel;
+
     //When walking
     Panorama *oldClosestPanorama;
     float oldClosestOpacity;

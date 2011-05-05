@@ -9,6 +9,7 @@ public:
     ~PreferencesDialog();
 private:
     void OnScroll(wxScrollEvent& event);
+    void OnCheckbox(wxCommandEvent &event);
 };
 
 #endif	/* PREFERENCESDIALOG_H */

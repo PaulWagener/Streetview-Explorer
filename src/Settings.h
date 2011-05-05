@@ -12,13 +12,11 @@ struct pano_location {
 
 class Settings {
 public:
-    bool mipmapping;
-    bool wireframe;
+    int mipmapping;
+    int wireframe;
     int horizontal_accuracy;
     int vertical_accuracy;
-    int numPanoramas;
-    int zoomLevel;
-    char last_pano[PANOID_LENGTH+1];
+    int zoom_level;
 
     std::vector<struct pano_location> locations;
 

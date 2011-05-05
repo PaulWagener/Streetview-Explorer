@@ -1,7 +1,7 @@
 #include "MainFrame.h"
 #include "Application.h"
 #include <wx/stdpaths.h>
-
+#include "Settings.h"
 #if __WXMAC__
 #include <ApplicationServices/ApplicationServices.h>
 #endif
@@ -31,7 +31,10 @@ bool Application::OnInit() {
     wxString dataDir = wxStandardPaths::Get().GetUserDataDir();
     wxMkDir(dataDir, 0755);
     wxSetWorkingDirectory(dataDir);
-    wxMessageBox(dataDir);
+    //wxMessageBox(dataDir);
+
+    //Load settings
+    settings = Settings();
     
     //Make sure there is a cache directory in the working directory
     ::wxMkDir(wxString("cache"), 0755);

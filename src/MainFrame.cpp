@@ -19,6 +19,7 @@ MainFrame* MainFrame::mainframe = NULL;
 enum {
     COMBOBOX_LOCATIONS = wxID_HIGHEST,
     MENU_BACKTOMAIN,
+    MENU_CLEARCACHE,
     BUTTON_EDIT_LOCATIONS,
     BUTTON_LAST_LOCATION,
     TEXTBOX_PASTE_LINK
@@ -39,6 +40,7 @@ isStartingWithPanorama(false) {
     //Set up menu
     wxMenu *fileMenu = new wxMenu();
     fileMenu->Append(MENU_BACKTOMAIN, "&Go to main screen");
+    fileMenu->Append(MENU_CLEARCACHE, "&Clear  cache (??? MB)");
     fileMenu->Append(wxID_PREFERENCES, "&Preferences");
     fileMenu->Append(wxID_ABOUT, "&About...");
     fileMenu->Append(wxID_EXIT, "E&xit");
@@ -155,14 +157,6 @@ void MainFrame::OnEditLocations(wxCommandEvent &event) {
 }
 
 /**
- * Button to start where the user left off the last time he explorer StreetView
- * @param event
- */
-void MainFrame::OnLastLocation(wxCommandEvent &event) {
-    StartWithPanorama(settings.last_pano);
-}
-
-/**
  * Callback for when the user pastes a link into the textfield.
  * When it
  * @param event
@@ -247,10 +241,6 @@ void MainFrame::ShowMain() {
     wxBoxSizer *buttonsSizer = new wxBoxSizer(wxHORIZONTAL);
     buttonsSizer->Add(new wxButton(mainPanel, BUTTON_EDIT_LOCATIONS, "Edit destinations"));
 
-    if (strlen(settings.last_pano) > 0) {
-        buttonsSizer->AddSpacer(40);
-        buttonsSizer->Add(new wxButton(mainPanel, BUTTON_LAST_LOCATION, "Go to last location"));
-    }
     sizer->Add(buttonsSizer, 0, wxALIGN_CENTER | wxALL, 5);
 
     //TextCtrl user can paste in
@@ -267,7 +257,6 @@ void MainFrame::ShowMain() {
     //Event handlers
     Connect(COMBOBOX_LOCATIONS, wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler(MainFrame::OnSelectLocation));
     Connect(BUTTON_EDIT_LOCATIONS, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrame::OnEditLocations));
-    Connect(BUTTON_LAST_LOCATION, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(MainFrame::OnLastLocation));
     Connect(TEXTBOX_PASTE_LINK, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(MainFrame::OnLinkPaste));
 }
 

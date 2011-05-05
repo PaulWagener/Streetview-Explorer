@@ -7,6 +7,7 @@
 #include <math.h>
 #include "statustext.h"
 #include <cstring>
+#include <stdlib.h>
 
 Explorer::Explorer(const char* firstPano) {
     requestDownloadThread = false;

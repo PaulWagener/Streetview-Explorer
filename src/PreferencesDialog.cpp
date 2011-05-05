@@ -24,7 +24,7 @@ enum {
  * @param parent
  */
 PreferencesDialog::PreferencesDialog(wxWindow *parent)
- : wxDialog(parent, wxID_ANY, wxString::FromAscii("Preferences"), wxDefaultPosition, wxSize(500, 250), wxCAPTION | wxCLOSE_BOX | wxFRAME_FLOAT_ON_PARENT){
+ : wxDialog(parent, wxID_ANY, wxString::FromAscii("Preferences"), wxDefaultPosition, wxSize(500, 300), wxCAPTION | wxCLOSE_BOX | wxFRAME_FLOAT_ON_PARENT){
     wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
     wxFlexGridSizer *fgs = new wxFlexGridSizer(2, 9, 15);
 

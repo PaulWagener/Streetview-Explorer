@@ -18,16 +18,16 @@ enum {
  * @param frame
  */
 EditLocationsDialog::EditLocationsDialog(wxWindow *frame)
-: wxDialog(frame, WINDOW_EDITLOCATIONS, "Edit Locations", wxDefaultPosition, wxSize(700, 300), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER),
+: wxDialog(frame, WINDOW_EDITLOCATIONS, wxString::FromAscii("Edit Locations"), wxDefaultPosition, wxSize(700, 300), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER),
 editing(false) {
 
     //GUI controls
     list_locations = new wxListCtrl(this, LISTBOX_LOCATIONS, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_EDIT_LABELS | wxLC_SINGLE_SEL);
-    addButton = new wxButton(this, BUTTON_ADD, "Add location");
-    editButton = new wxButton(this, BUTTON_EDIT, "Edit location");
-    removeButton = new wxButton(this, BUTTON_REMOVE, "Remove location");
-    upButton = new wxButton(this, BUTTON_UP, "Move Up");
-    downButton = new wxButton(this, BUTTON_DOWN, "Move Down");
+    addButton = new wxButton(this, BUTTON_ADD, wxString::FromAscii("Add location"));
+    editButton = new wxButton(this, BUTTON_EDIT, wxString::FromAscii("Edit location"));
+    removeButton = new wxButton(this, BUTTON_REMOVE, wxString::FromAscii("Remove location"));
+    upButton = new wxButton(this, BUTTON_UP, wxString::FromAscii("Move Up"));
+    downButton = new wxButton(this, BUTTON_DOWN, wxString::FromAscii("Move Down"));
 
     //Sizer that divides GUI up in left listbox and right buttons
     wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -63,12 +63,12 @@ editing(false) {
     //ListCtrl columns
     wxListItem col0;
     col0.SetId(0);
-    col0.SetText("Name");
+    col0.SetText(wxString::FromAscii("Name"));
     col0.SetWidth(300);
     list_locations->InsertColumn(0, col0);
 
     col0.SetId(1);
-    col0.SetText("id");
+    col0.SetText(wxString::FromAscii("id"));
     col0.SetWidth(200);
     list_locations->InsertColumn(1, col0);
 
@@ -88,7 +88,7 @@ EditLocationsDialog::~EditLocationsDialog() {
  * to prevent the up being on for the topmost and the down being on for the bottommost
  * @param event
  */
-void EditLocationsDialog::OnSelectionChanges(wxCommandEvent &event) {
+void EditLocationsDialog::OnSelectionChanges(wxCommandEvent &) {
     UpdateButtons();
 }
 
@@ -97,7 +97,7 @@ void EditLocationsDialog::OnSelectionChanges(wxCommandEvent &event) {
  * 
  * @param event
  */
-void EditLocationsDialog::OnEditItem(wxCommandEvent &event) {
+void EditLocationsDialog::OnEditItem(wxCommandEvent &) {
     list_locations->EditLabel(GetSelected());
     editing = true;
     UpdateButtons();
@@ -113,7 +113,7 @@ void EditLocationsDialog::OnEditFinished(wxListEvent &event) {
     if(event.GetIndex() < 0 || event.GetIndex() >= (int)settings.locations.size())
         return;
 
-    strncpy((char*) &settings.locations[event.GetIndex()].name, (const char*) event.GetLabel(), LOCATION_LENGTH+1);
+    strncpy((char*) &settings.locations[event.GetIndex()].name, event.GetLabel().char_str(), LOCATION_LENGTH+1);
     editing = false;
     UpdateButtons();
 }
@@ -122,7 +122,7 @@ void EditLocationsDialog::OnEditFinished(wxListEvent &event) {
  * Let the user paste a link and add it as a location
  * @param event
  */
-void EditLocationsDialog::OnAdd(wxCommandEvent &event) {
+void EditLocationsDialog::OnAdd(wxCommandEvent &) {
     wxString link = OpenPasteDialog();
 
     //In case the user cancelled
@@ -132,7 +132,7 @@ void EditLocationsDialog::OnAdd(wxCommandEvent &event) {
     //Create new location
     struct pano_location l;
     strncpy((char*) &l.name, "Unnamed Location", LOCATION_LENGTH+1);
-    strncpy((char*) &l.pano_id, (const char*) link, PANOID_LENGTH+1);
+    strncpy((char*) &l.pano_id, link.char_str(), PANOID_LENGTH+1);
     settings.locations.push_back(l);
 
     RefillList();
@@ -148,7 +148,7 @@ void EditLocationsDialog::OnAdd(wxCommandEvent &event) {
  *
  * @param event
  */
-void EditLocationsDialog::OnEdit(wxCommandEvent &event) {
+void EditLocationsDialog::OnEdit(wxCommandEvent &) {
     wxString link = OpenPasteDialog();
     if (link.length() == 0)
         return;
@@ -156,15 +156,15 @@ void EditLocationsDialog::OnEdit(wxCommandEvent &event) {
     //Get the index of the selected item
     const unsigned int selected = GetSelected();
 
-    if(selected < 0 || selected >= settings.locations.size())
+    if(selected >= settings.locations.size())
         return;
 
-    strncpy(settings.locations[selected].pano_id, (const char*) link, PANOID_LENGTH+1);
+    strncpy(settings.locations[selected].pano_id, link.char_str(), PANOID_LENGTH+1);
 
     RefillList(selected);
 }
 
-void EditLocationsDialog::OnRemove(wxCommandEvent &event) {
+void EditLocationsDialog::OnRemove(wxCommandEvent &) {
     settings.locations.erase(settings.locations.begin() + GetSelected());
 
     RefillList(GetSelected());
@@ -175,9 +175,9 @@ void EditLocationsDialog::OnRemove(wxCommandEvent &event) {
  * Swap the selected item with the one above it
  * @param event
  */
-void EditLocationsDialog::OnUp(wxCommandEvent &event) {
+void EditLocationsDialog::OnUp(wxCommandEvent &) {
     unsigned int i = GetSelected();
-    if(i < 0 || i >= settings.locations.size())
+    if(i < 1 || i >= settings.locations.size())
         return;
 
     struct pano_location temp = settings.locations[i - 1];
@@ -191,9 +191,9 @@ void EditLocationsDialog::OnUp(wxCommandEvent &event) {
  * Swap the selected item with the one below it
  * @param event
  */
-void EditLocationsDialog::OnDown(wxCommandEvent &event) {
+void EditLocationsDialog::OnDown(wxCommandEvent &) {
     unsigned int i = GetSelected();
-    if(i < 0 || i >= settings.locations.size())
+    if(i >= settings.locations.size() - 1)
         return;
 
     struct pano_location temp = settings.locations[i + 1];
@@ -222,8 +222,8 @@ void EditLocationsDialog::RefillList(unsigned int selected) {
         list_locations->SetItem(item); //Seems necessary for selected state to catch on
 
         //Fill in text
-        list_locations->SetItem(n, 0, settings.locations[n].name);
-        list_locations->SetItem(n, 1, settings.locations[n].pano_id);
+        list_locations->SetItem(n, 0, wxString::FromAscii(settings.locations[n].name));
+        list_locations->SetItem(n, 1, wxString::FromAscii(settings.locations[n].pano_id));
     }
 }
 
@@ -269,12 +269,12 @@ wxDialog *pasteDialog;
  */
 wxString EditLocationsDialog::OpenPasteDialog() {
     //Default value for if the dialog fails
-    pasted_panoID = wxString("");
+    pasted_panoID = wxString::FromAscii("");
 
-    pasteDialog = new wxDialog(this, wxID_ANY, "Paste Google StreetView link", wxDefaultPosition, wxSize(500, 100));
+    pasteDialog = new wxDialog(this, wxID_ANY, wxString::FromAscii("Paste Google StreetView link"), wxDefaultPosition, wxSize(500, 100));
     wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 
-    wxTextCtrl *text_link = new wxTextCtrl(pasteDialog, TEXT_LINK_PASTE, "Paste link here");
+    wxTextCtrl *text_link = new wxTextCtrl(pasteDialog, TEXT_LINK_PASTE, wxString::FromAscii("Paste link here"));
     text_link->Connect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(EditLocationsDialog::OnPasteLink), NULL, this);
     sizer->Add(text_link, 1, wxEXPAND | wxALL, 5);
 
@@ -294,7 +294,7 @@ void EditLocationsDialog::OnPasteLink(wxCommandEvent &event) {
     event.Skip();
     wxString link = event.GetString();
 
-    int g = link.find("&panoid=");
+    int g = link.find(wxString::FromAscii("&panoid="));
     if (g == -1)
         return;
 

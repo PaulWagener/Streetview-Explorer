@@ -87,7 +87,7 @@
         <ccTool>
           <developmentMode>5</developmentMode>
           <incDir>
-            <pElem>/usr/local/include/wx-2.9</pElem>
+            <pElem>/usr/include;/usr/local/include/wx-2.9</pElem>
             <pElem>/usr/local/include</pElem>
           </incDir>
           <commandLine>`wx-config --cppflags`</commandLine>
@@ -104,7 +104,7 @@
         <linkerTool>
           <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/StreetViewExplorer</output>
           <linkerLibItems>
-            <linkerOptionItem>`wx-config --libs --gl-libs` `curl-config --static-libs` -Wl,-Bstatic -ljpeg -lGLEW -Wl,-Bdynamic</linkerOptionItem>
+            <linkerOptionItem>`wx-config --libs --gl-libs` `curl-config --static-libs` -Wl,-Bstatic -lGLEW -Wl,-Bdynamic</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>

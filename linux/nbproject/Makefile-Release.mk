@@ -63,7 +63,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=`wx-config --libs --gl-libs` `curl-config --static-libs` -Wl,-Bstatic -ljpeg -lGLEW -Wl,-Bdynamic  
+LDLIBSOPTIONS=`wx-config --libs --gl-libs` `curl-config --static-libs` -Wl,-Bstatic -lGLEW -Wl,-Bdynamic  
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -76,72 +76,72 @@ dist/Release/GNU-Linux-x86/StreetViewExplorer: ${OBJECTFILES}
 ${OBJECTDIR}/_ext/1360937237/Settings.o: ../src/Settings.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Settings.o ../src/Settings.cpp
+	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/include\;/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Settings.o ../src/Settings.cpp
 
 ${OBJECTDIR}/_ext/1360937237/MainFrame.o: ../src/MainFrame.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/MainFrame.o ../src/MainFrame.cpp
+	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/include\;/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/MainFrame.o ../src/MainFrame.cpp
 
 ${OBJECTDIR}/_ext/1360937237/Application.o: ../src/Application.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Application.o ../src/Application.cpp
+	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/include\;/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Application.o ../src/Application.cpp
 
 ${OBJECTDIR}/_ext/1360937237/GLCanvas.o: ../src/GLCanvas.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/GLCanvas.o ../src/GLCanvas.cpp
+	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/include\;/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/GLCanvas.o ../src/GLCanvas.cpp
 
 ${OBJECTDIR}/_ext/1360937237/Player.o: ../src/Player.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Player.o ../src/Player.cpp
+	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/include\;/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Player.o ../src/Player.cpp
 
 ${OBJECTDIR}/_ext/1360937237/download.o: ../src/download.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/download.o ../src/download.cpp
+	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/include\;/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/download.o ../src/download.cpp
 
 ${OBJECTDIR}/_ext/1360937237/Utm.o: ../src/Utm.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Utm.o ../src/Utm.cpp
+	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/include\;/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Utm.o ../src/Utm.cpp
 
 ${OBJECTDIR}/_ext/1360937237/statustext.o: ../src/statustext.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/statustext.o ../src/statustext.cpp
+	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/include\;/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/statustext.o ../src/statustext.cpp
 
 ${OBJECTDIR}/_ext/1360937237/PreferencesDialog.o: ../src/PreferencesDialog.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/PreferencesDialog.o ../src/PreferencesDialog.cpp
+	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/include\;/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/PreferencesDialog.o ../src/PreferencesDialog.cpp
 
 ${OBJECTDIR}/_ext/1360937237/base64.o: ../src/base64.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/base64.o ../src/base64.cpp
+	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/include\;/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/base64.o ../src/base64.cpp
 
 ${OBJECTDIR}/_ext/1360937237/Panorama.o: ../src/Panorama.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Panorama.o ../src/Panorama.cpp
+	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/include\;/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Panorama.o ../src/Panorama.cpp
 
 ${OBJECTDIR}/_ext/1360937237/Explorer.o: ../src/Explorer.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Explorer.o ../src/Explorer.cpp
+	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/include\;/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Explorer.o ../src/Explorer.cpp
 
 ${OBJECTDIR}/_ext/1360937237/common.o: ../src/common.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/common.o ../src/common.cpp
+	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/include\;/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/common.o ../src/common.cpp
 
 ${OBJECTDIR}/_ext/1360937237/EditLocationsDialog.o: ../src/EditLocationsDialog.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/EditLocationsDialog.o ../src/EditLocationsDialog.cpp
+	$(COMPILE.cc) -O2 -DCURL_STATICLIB -I/usr/include\;/usr/local/include/wx-2.9 -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/EditLocationsDialog.o ../src/EditLocationsDialog.cpp
 
 # Subprojects
 .build-subprojects:

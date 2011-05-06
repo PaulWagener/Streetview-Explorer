@@ -91,6 +91,9 @@
             <pElem>/usr/local/include</pElem>
           </incDir>
           <commandLine>`wx-config --cppflags`</commandLine>
+          <preprocessorList>
+            <Elem>CURL_STATICLIB</Elem>
+          </preprocessorList>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
@@ -101,9 +104,8 @@
         <linkerTool>
           <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/StreetViewExplorer</output>
           <linkerLibItems>
-            <linkerOptionItem>`wx-config --libs --gl-libs`</linkerOptionItem>
+            <linkerOptionItem>`wx-config --libs --gl-libs` `curl-config --static-libs` -Wl,-Bstatic -ljpeg -lGLEW -Wl,-Bdynamic</linkerOptionItem>
           </linkerLibItems>
-          <commandLine>-lcurl -ljpeg -lGLEW</commandLine>
         </linkerTool>
       </compileType>
     </conf>

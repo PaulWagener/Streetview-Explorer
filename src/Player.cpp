@@ -18,6 +18,8 @@ Player::Player() {
     cam.elevation = cam.target_elevation;
 
     cam.target_distance = 12;
+    cam.distance = cam.target_distance;
+
     cam.rotation = 0;
     cam.x = 0;
     cam.y = 0;
@@ -25,9 +27,9 @@ Player::Player() {
 
     target_rotation = 0;
     rotation = target_rotation;
+    
     target_height = -3;
     height = target_height;
-
 }
 
 Player::~Player() {

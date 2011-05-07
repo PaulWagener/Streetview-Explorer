@@ -19,6 +19,7 @@ private:
     GLCanvas *glCanvas;
     wxChoice *combobox;
     wxStatusBar *statusbar;
+    wxPanel *mainPanel;
     
 
     bool isStartingWithPanorama;

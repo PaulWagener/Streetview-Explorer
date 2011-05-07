@@ -7,6 +7,7 @@ class PreferencesDialog : public wxDialog {
 public:
     PreferencesDialog(wxWindow *parent);
     ~PreferencesDialog();
+    static bool preferencesVisible;
 private:
     void OnScroll(wxScrollEvent& event);
     void OnCheckbox(wxCommandEvent &event);

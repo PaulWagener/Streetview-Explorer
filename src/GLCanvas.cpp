@@ -95,6 +95,8 @@ void GLCanvas::OnMouseDown(wxMouseEvent& event) {
         trap_y = event.m_y;
         //WarpPointer(trap_x, trap_y);
         setStatus("Press <esc> to release the mouse again...");
+    } else {
+        disableCapture();
     }
 }
 

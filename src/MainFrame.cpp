@@ -32,32 +32,29 @@ enum {
  * Recursively clean out the contents of dir.
  */
 static bool
-clear_dir(wxString path)
-{
-	if (!wxDirExists(path)) {
-		return false;
-	}
+clear_dir(wxString path) {
+    if (!wxDirExists(path)) {
+        return false;
+    }
 
-	wxString glob = path + wxString::FromAscii("/*");
+    wxString glob = path + wxString::FromAscii("/*");
 
-	/* Remove all files. */
-	for (wxString fname = wxFindFirstFile(glob, wxFILE); !fname.empty(); fname = wxFindNextFile()) {
-		if (!wxRemoveFile(fname))
-			return false;
-	}
+    /* Remove all files. */
+    for (wxString fname = wxFindFirstFile(glob, wxFILE); !fname.empty(); fname = wxFindNextFile()) {
+        if (!wxRemoveFile(fname))
+            return false;
+    }
 
-	/* Remove all directories. */
-	for (wxString fname = wxFindFirstFile(glob, wxDIR); !fname.empty(); fname = wxFindNextFile()) {
-		if (!clear_dir(fname) || !wxRmdir(fname))
-			return false;
-	}
-	return true;
+    /* Remove all directories. */
+    for (wxString fname = wxFindFirstFile(glob, wxDIR); !fname.empty(); fname = wxFindNextFile()) {
+        if (!clear_dir(fname) || !wxRmdir(fname))
+            return false;
+    }
+    return true;
 }
 
-wxPanel *mainPanel;
-
 MainFrame::MainFrame()
-: wxFrame(NULL, wxID_ANY, wxString::FromAscii("StreetView Explorer"), wxDefaultPosition, wxSize(DEFAULT_WIDTH, DEFAULT_HEIGHT)),
+: wxFrame(NULL, wxID_ANY, wxString::FromAscii("StreetView Explorer 1.0.1"), wxDefaultPosition, wxSize(DEFAULT_WIDTH, DEFAULT_HEIGHT)),
 isStartingWithPanorama(false) {
 
     mainframe = this;
@@ -104,7 +101,7 @@ isStartingWithPanorama(false) {
 void MainFrame::OnClearCache(wxMenuEvent &) {
     double sizeMB = wxDir::GetTotalSize(wxString::FromAscii("cache")).ToDouble() / 1024 / 1024;
     char question[200];
-    sprintf(question, "Are you sure you want to delete %.2fMB of Street View cache images?", sizeMB); 
+    sprintf(question, "Are you sure you want to delete %.2fMB of Street View cache images?", sizeMB);
     int answer = wxMessageBox(wxString::FromAscii(question), wxString::FromAscii("Clear cache"), wxYES_NO | wxCANCEL, this);
 
     //Recreate cache directory
@@ -146,12 +143,14 @@ void MainFrame::OnGoToMainScreen(wxMenuEvent &) {
  * @param
  */
 void MainFrame::OnPreferences(wxMenuEvent& WXUNUSED(event)) {
+    if(PreferencesDialog::preferencesVisible)
+        return;
+
     if (glCanvas != NULL)
         glCanvas->disableCapture();
 
     PreferencesDialog *prefs = new PreferencesDialog(this);
-    prefs->ShowModal();
-    delete prefs;
+    prefs->Show();
 }
 
 /**
@@ -298,6 +297,8 @@ void MainFrame::ShowMain() {
     //Replace the (presumable) OpenGL canvas
     ReplaceSizer(sizer);
     glCanvas = NULL;
+
+    isStartingWithPanorama = false;
 
     //Event handlers
     Connect(COMBOBOX_LOCATIONS, wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler(MainFrame::OnSelectLocation));

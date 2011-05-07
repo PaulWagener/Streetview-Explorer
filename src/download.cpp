@@ -100,6 +100,10 @@ struct image_block download_jpeg(const char *url) {
     const std::auto_ptr<std::vector<unsigned char> > jpeg_data = download(url);
     struct image_block image;
 
+    //Prevent feeding invalid data to the jpeg decompression algorithm because it will just abruptly exit()
+    if((*jpeg_data)[0] != 0xFF || (*jpeg_data)[1] != 0xD8 && (*jpeg_data)[2] != 0xFF)
+        throw "File not valid JPEG";
+
     //Initialize jpeg decompression
     struct jpeg_decompress_struct info;
     struct jpeg_error_mgr err;

@@ -18,6 +18,8 @@ enum {
     CHECKBOX_WIREFRAME
 };
 
+bool PreferencesDialog::preferencesVisible = false;
+
 /**
  * Create the preferences dialog and fill it with sliders
  * 
@@ -63,6 +65,7 @@ PreferencesDialog::PreferencesDialog(wxWindow *parent)
     Connect(SLIDER_ZOOM_LEVEL, wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(PreferencesDialog::OnScroll));
     Connect(CHECKBOX_MIPMAPPING, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(PreferencesDialog::OnCheckbox));
     Connect(CHECKBOX_WIREFRAME, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(PreferencesDialog::OnCheckbox));
+    preferencesVisible = true;
 }
 
 /**
@@ -70,6 +73,7 @@ PreferencesDialog::PreferencesDialog(wxWindow *parent)
  */
 PreferencesDialog::~PreferencesDialog() {
     settings.saveSettings();
+    preferencesVisible = false;
 }
 
 /**

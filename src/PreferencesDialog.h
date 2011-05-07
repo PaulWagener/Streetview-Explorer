@@ -3,7 +3,7 @@
 
 #include <wx/wx.h>
 
-class PreferencesDialog : public wxDialog {
+class PreferencesDialog : public wxFrame {
 public:
     PreferencesDialog(wxWindow *parent);
     ~PreferencesDialog();

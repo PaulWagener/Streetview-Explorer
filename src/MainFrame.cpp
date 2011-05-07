@@ -54,7 +54,7 @@ clear_dir(wxString path) {
 }
 
 MainFrame::MainFrame()
-: wxFrame(NULL, wxID_ANY, wxString::FromAscii("StreetView Explorer 1.0.1"), wxDefaultPosition, wxSize(DEFAULT_WIDTH, DEFAULT_HEIGHT)),
+: wxFrame(NULL, wxID_ANY, wxString::FromAscii("StreetView Explorer"), wxDefaultPosition, wxSize(DEFAULT_WIDTH, DEFAULT_HEIGHT)),
 isStartingWithPanorama(false) {
 
     mainframe = this;
@@ -66,7 +66,7 @@ isStartingWithPanorama(false) {
     //Set up menu
     wxMenu *fileMenu = new wxMenu();
     fileMenu->Append(MENU_BACKTOMAIN, wxString::FromAscii("&Go to main screen"));
-    fileMenu->Append(MENU_CLEARCACHE, wxString::FromAscii("&Clear  cache"));
+    fileMenu->Append(MENU_CLEARCACHE, wxString::FromAscii("&Clear cache"));
     fileMenu->Append(wxID_PREFERENCES, wxString::FromAscii("&Preferences"));
     fileMenu->Append(wxID_ABOUT, wxString::FromAscii("&About..."));
     fileMenu->Append(wxID_EXIT, wxString::FromAscii("E&xit"));
@@ -159,8 +159,8 @@ void MainFrame::OnPreferences(wxMenuEvent& WXUNUSED(event)) {
  */
 void MainFrame::OnAbout(wxMenuEvent& WXUNUSED(event)) {
     wxMessageBox(wxString::FromAscii("This application is brought to you by Paul Wagener.\nhttp://code.google.com/p/streetview-explorer\nSpecial thanks to Ariane, Mr. Ropers and the helpful people at #wxwidgets"),
-            wxString::FromAscii("About StreetView Explorer"),
-            wxOK | wxICON_INFORMATION, this);
+            wxString::FromAscii("About StreetView Explorer 1.0.1"),
+            wxOK, this);
 }
 
 /**

@@ -26,7 +26,7 @@ bool PreferencesDialog::preferencesVisible = false;
  * @param parent
  */
 PreferencesDialog::PreferencesDialog(wxWindow *parent)
-	: wxDialog(parent, wxID_ANY, wxString::FromAscii("Preferences"), wxDefaultPosition, wxSize(500, 300), wxCAPTION | wxCLOSE_BOX | wxFRAME_FLOAT_ON_PARENT | wxRESIZE_BORDER) {
+	: wxFrame(parent, wxID_ANY, wxString::FromAscii("Preferences"), wxDefaultPosition, wxSize(500, 300), wxCAPTION | wxCLOSE_BOX | wxFRAME_FLOAT_ON_PARENT | wxRESIZE_BORDER) {
     wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
     wxFlexGridSizer *fgs = new wxFlexGridSizer(2, 9, 15);
 
@@ -66,6 +66,9 @@ PreferencesDialog::PreferencesDialog(wxWindow *parent)
     Connect(CHECKBOX_MIPMAPPING, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(PreferencesDialog::OnCheckbox));
     Connect(CHECKBOX_WIREFRAME, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(PreferencesDialog::OnCheckbox));
     preferencesVisible = true;
+
+    
+    this->SetSize(500, -1);
 }
 
 /**

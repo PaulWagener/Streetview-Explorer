@@ -73,6 +73,7 @@ editing(false) {
     list_locations->InsertColumn(1, col0);
 
     RefillList();
+    UpdateButtons();
 }
 
 /**

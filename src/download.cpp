@@ -51,6 +51,7 @@ std::auto_ptr<std::vector<unsigned char> > download(const char *url) {
     return b;
 }
 
+#if __WXGTK__
 /* Read JPEG image from a memory segment */
 static void init_source (j_decompress_ptr cinfo) {}
 static boolean fill_input_buffer (j_decompress_ptr cinfo)
@@ -87,6 +88,7 @@ static void jpeg_mem_src (j_decompress_ptr cinfo, void* buffer, long nbytes)
     src->bytes_in_buffer = nbytes;
     src->next_input_byte = (JOCTET*)buffer;
 }
+#endif
 
 
 /**

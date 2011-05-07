@@ -87,6 +87,9 @@
             <pElem>/usr/local/include</pElem>
           </incDir>
           <commandLine>`/usr/local/bin/wx-config --cppflags`</commandLine>
+          <preprocessorList>
+            <Elem>CURL_STATICLIB</Elem>
+          </preprocessorList>
           <warningLevel>2</warningLevel>
         </ccTool>
         <fortranCompilerTool>
@@ -97,7 +100,9 @@
         </asmTool>
         <linkerTool>
           <stripSymbols>true</stripSymbols>
-          <commandLine>-lz -lcurl -ljpeg `/usr/local/bin/wx-config --libs --gl-libs` -framework OpenGL -framework ApplicationServices</commandLine>
+          <linkerLibItems>
+            <linkerOptionItem>/usr/local/lib/libjpeg.a `/usr/local/bin/curl-config --static-libs` `/usr/local/bin/wx-config --libs --gl-libs` -framework OpenGL -framework ApplicationServices</linkerOptionItem>
+          </linkerLibItems>
         </linkerTool>
       </compileType>
     </conf>

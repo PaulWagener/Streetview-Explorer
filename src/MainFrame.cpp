@@ -159,7 +159,7 @@ void MainFrame::OnPreferences(wxMenuEvent& WXUNUSED(event)) {
  * @param
  */
 void MainFrame::OnAbout(wxMenuEvent& WXUNUSED(event)) {
-    wxMessageBox(wxString::FromAscii("This application is brought to you by Paul Wagener.\nhttp://code.google.com/p/streetview-explorer\nSpecial thanks to Ariane and the helpful people at #wxwidgets"),
+    wxMessageBox(wxString::FromAscii("This application is brought to you by Paul Wagener.\nhttp://code.google.com/p/streetview-explorer\nSpecial thanks to Ariane, Mr. Ropers and the helpful people at #wxwidgets"),
             wxString::FromAscii("About StreetView Explorer"),
             wxOK | wxICON_INFORMATION, this);
 }

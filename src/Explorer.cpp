@@ -204,16 +204,16 @@ Panorama* Explorer::getPanoramaById(const char* pano_id) {
     return NULL;
 }
 
+bool useShader = true;
+
 void Explorer::display(int width, int height) {
 
     if (!glInitialized) {
 
 #ifdef __GLEWINIT__
-        GLenum glew_err;
-        if ((glew_err = glewInit()) != GLEW_OK) {
-            fprintf(stderr, "Error: %s\n", glewGetErrorString(glew_err));
-            exit(1);
-	}
+        if (glewInit() != GLEW_OK) {
+            useShader = false;
+		}
 #endif
 
         glShadeModel(GL_SMOOTH);
@@ -242,15 +242,17 @@ void Explorer::display(int width, int height) {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
 
-        const int fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-        const char *p = "uniform sampler2D tex;uniform float alpha; void main(){gl_FragColor = gl_Color * texture2D(tex, gl_TexCoord[0].xy);gl_FragColor.a = gl_Color.w*alpha;}";
-        glShaderSource(fragment_shader, 1, &p, NULL);
-        glCompileShader(fragment_shader);
+		if(useShader) {
+			const int fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+			const char *p = "uniform sampler2D tex;uniform float alpha; void main(){gl_FragColor = gl_Color * texture2D(tex, gl_TexCoord[0].xy);gl_FragColor.a = gl_Color.w*alpha;}";
+			glShaderSource(fragment_shader, 1, &p, NULL);
+			glCompileShader(fragment_shader);
 
-        program = glCreateProgram();
-        glAttachShader(program, fragment_shader);
-        glLinkProgram(program);
-        glUseProgram(program);
+			program = glCreateProgram();
+			glAttachShader(program, fragment_shader);
+			glLinkProgram(program);
+			glUseProgram(program);
+		}
 
         glInitialized = true;
     }
@@ -308,9 +310,13 @@ void Explorer::display(int width, int height) {
 
     glColor3f(1, 1, 1);
 
-    glUseProgram(program);
-    const int alphaUniform = glGetUniformLocation(program, "alpha");
-    glEnable(GL_TEXTURE_2D);
+    int alphaUniform = 0;
+	if(useShader) {
+		glUseProgram(program);
+		alphaUniform = glGetUniformLocation(program, "alpha");
+	}
+    
+	glEnable(GL_TEXTURE_2D);
 
     /**
      * Draw the background, this is from the panorama the closest
@@ -319,7 +325,8 @@ void Explorer::display(int width, int height) {
     if (closestPanorama != NULL) {
         player.target_height = -closestPanorama->getGroundHeight();
 
-        glUniform1f(alphaUniform, 1);
+		if(useShader)
+			glUniform1f(alphaUniform, 1);
         closestPanorama->draw(referencePoint, true);
         glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -329,7 +336,8 @@ void Explorer::display(int width, int height) {
         //If another panorama is fading away draw that over the current one with a faded opacity
         if (oldClosestPanorama != closestPanorama && oldClosestPanorama != NULL) {
 
-            glUniform1f(alphaUniform, oldClosestOpacity);
+			if(useShader)
+				glUniform1f(alphaUniform, oldClosestOpacity);
             oldClosestPanorama->draw(referencePoint, true);
             glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -345,11 +353,13 @@ void Explorer::display(int width, int height) {
 
     //Draw all other panorama's (including the closest just to fill the depth buffer)
     for (unsigned int i = 0; i < panoramas.size(); i++) {
-        glUniform1f(alphaUniform, panoramas[i]->opacity);
+        if(useShader)
+			glUniform1f(alphaUniform, panoramas[i]->opacity);
         panoramas[i]->draw(referencePoint);
     }
 
-    glUseProgram(0);
+	if(useShader)
+		glUseProgram(0);
 
     //Draw the player
     player.drawPlayer(referencePoint);

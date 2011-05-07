@@ -27,25 +27,27 @@ bool PreferencesDialog::preferencesVisible = false;
  */
 PreferencesDialog::PreferencesDialog(wxWindow *parent)
 	: wxFrame(parent, wxID_ANY, wxString::FromAscii("Preferences"), wxDefaultPosition, wxSize(500, 300), wxCAPTION | wxCLOSE_BOX | wxFRAME_FLOAT_ON_PARENT | wxRESIZE_BORDER) {
-    wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
+    
+	wxPanel *panel = new wxPanel(this);	
+	wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
     wxFlexGridSizer *fgs = new wxFlexGridSizer(2, 9, 15);
 
-    fgs->Add(new wxStaticText(this, wxID_ANY, wxString::FromAscii("Vertical texture accuracy")));
-    fgs->Add(new wxSlider(this, SLIDER_VERTICAL_ACC, settings.vertical_accuracy, VERTICAL_ACC_BEST, VERTICAL_ACC_FASTEST, wxDefaultPosition, wxDefaultSize, wxSL_LABELS | wxSL_INVERSE), 1, wxEXPAND);
+    fgs->Add(new wxStaticText(panel, wxID_ANY, wxString::FromAscii("Vertical texture accuracy")));
+    fgs->Add(new wxSlider(panel, SLIDER_VERTICAL_ACC, settings.vertical_accuracy, VERTICAL_ACC_BEST, VERTICAL_ACC_FASTEST, wxDefaultPosition, wxDefaultSize, wxSL_LABELS | wxSL_INVERSE), 1, wxEXPAND);
 
-    fgs->Add(new wxStaticText(this, wxID_ANY, wxString::FromAscii("Horizontal model accuracy")));
-    fgs->Add(new wxSlider(this, SLIDER_HORIZONTAL_ACC, settings.horizontal_accuracy, HORIZONTAL_ACC_BEST, HORIZONTAL_ACC_FASTEST, wxDefaultPosition, wxDefaultSize, wxSL_LABELS | wxSL_INVERSE), 1, wxEXPAND);
+    fgs->Add(new wxStaticText(panel, wxID_ANY, wxString::FromAscii("Horizontal model accuracy")));
+    fgs->Add(new wxSlider(panel, SLIDER_HORIZONTAL_ACC, settings.horizontal_accuracy, HORIZONTAL_ACC_BEST, HORIZONTAL_ACC_FASTEST, wxDefaultPosition, wxDefaultSize, wxSL_LABELS | wxSL_INVERSE), 1, wxEXPAND);
 
-    fgs->Add(new wxStaticText(this, wxID_ANY, wxString::FromAscii("Detail level")));
-    fgs->Add(new wxSlider(this, SLIDER_ZOOM_LEVEL, settings.zoom_level, ZOOM_LEVEL_MIN, ZOOM_LEVEL_MAX, wxDefaultPosition, wxDefaultSize, wxSL_LABELS), 1, wxEXPAND);
+    fgs->Add(new wxStaticText(panel, wxID_ANY, wxString::FromAscii("Detail level")));
+    fgs->Add(new wxSlider(panel, SLIDER_ZOOM_LEVEL, settings.zoom_level, ZOOM_LEVEL_MIN, ZOOM_LEVEL_MAX, wxDefaultPosition, wxDefaultSize, wxSL_LABELS), 1, wxEXPAND);
 
-    fgs->Add(new wxStaticText(this, wxID_ANY, wxString::FromAscii("Mipmapping")));
-    wxCheckBox *mipmappingCheckbox = new wxCheckBox(this, CHECKBOX_MIPMAPPING, wxString::FromAscii(""));
+    fgs->Add(new wxStaticText(panel, wxID_ANY, wxString::FromAscii("Mipmapping")));
+    wxCheckBox *mipmappingCheckbox = new wxCheckBox(panel, CHECKBOX_MIPMAPPING, wxString::FromAscii(""));
     mipmappingCheckbox->SetValue(settings.mipmapping == 1);
     fgs->Add(mipmappingCheckbox);
 
-    fgs->Add(new wxStaticText(this, wxID_ANY, wxString::FromAscii("Wireframe")));
-    wxCheckBox *wireframeCheckbox = new wxCheckBox(this, CHECKBOX_WIREFRAME, wxString::FromAscii(""));
+    fgs->Add(new wxStaticText(panel, wxID_ANY, wxString::FromAscii("Wireframe")));
+    wxCheckBox *wireframeCheckbox = new wxCheckBox(panel, CHECKBOX_WIREFRAME, wxString::FromAscii(""));
     wireframeCheckbox->SetValue(settings.wireframe == 1);
     fgs->Add(wireframeCheckbox);
 
@@ -57,7 +59,7 @@ PreferencesDialog::PreferencesDialog(wxWindow *parent)
     fgs->AddGrowableRow(2, 1);
 
     hbox->Add(fgs, 1, wxALL | wxEXPAND, 5);
-    this->SetSizer(hbox);
+    panel->SetSizer(hbox);
 
     //Add event handlers
     Connect(SLIDER_VERTICAL_ACC, wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(PreferencesDialog::OnScroll));
@@ -66,9 +68,6 @@ PreferencesDialog::PreferencesDialog(wxWindow *parent)
     Connect(CHECKBOX_MIPMAPPING, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(PreferencesDialog::OnCheckbox));
     Connect(CHECKBOX_WIREFRAME, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(PreferencesDialog::OnCheckbox));
     preferencesVisible = true;
-
-    
-    this->SetSize(500, -1);
 }
 
 /**

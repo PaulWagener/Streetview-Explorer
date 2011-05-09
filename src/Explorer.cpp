@@ -216,9 +216,11 @@ void Explorer::display(int width, int height) {
         }
 #endif
 
+#ifndef __WXMSW__
         const GLubyte* strExt = glGetString(GL_EXTENSIONS);
 	useShader = gluCheckExtension(
 	    (const GLubyte*)"GL_ARB_shading_language_100", strExt);
+#endif
 
         glShadeModel(GL_SMOOTH);
         glEnable(GL_DEPTH_TEST);

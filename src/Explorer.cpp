@@ -204,17 +204,21 @@ Panorama* Explorer::getPanoramaById(const char* pano_id) {
     return NULL;
 }
 
-bool useShader = true;
+bool useShader = false;
 
 void Explorer::display(int width, int height) {
 
     if (!glInitialized) {
 
 #ifdef __GLEWINIT__
-        if (glewInit() != GLEW_OK) {
-            useShader = false;
-		}
+        if (glewInit() == GLEW_OK) {
+            useShader = true;
+        }
 #endif
+
+        const GLubyte* strExt = glGetString(GL_EXTENSIONS);
+	useShader = gluCheckExtension(
+	    (const GLubyte*)"GL_ARB_shading_language_100", strExt);
 
         glShadeModel(GL_SMOOTH);
         glEnable(GL_DEPTH_TEST);

@@ -463,7 +463,7 @@ void Panorama::loadXML(const char *xml) {
 
     //Scan the data properties
     int found = sscanf(strstr(xml, "<data_properties"),
-            "<data_properties image_width=\"%d\" image_height=\"%d\" tile_width=\"%d\" tile_height=\"%d\" pano_id=\"%[_-A-Za-z0-9]\" num_zoom_levels=\"%d\" lat=\"%f\" lng=\"%f\" original_lat=\"%f\" original_lng=\"%f\">",
+            "<data_properties image_width=\"%d\" image_height=\"%d\" tile_width=\"%d\" tile_height=\"%d\" image_date=\"\" pano_id=\"%[_-A-Za-z0-9]\" num_zoom_levels=\"%d\" lat=\"%f\" lng=\"%f\" original_lat=\"%f\" original_lng=\"%f\">",
             &image_width, &image_height, &tile_width, &tile_height, &pano_id[0], &num_zoom_levels, &lat, &lng, &original_lat, &original_lng);
 
     if (found != 10)

@@ -11,3 +11,5 @@
 *.lai
 *.la
 *.a
+/mac/build/
+/mac/dist/

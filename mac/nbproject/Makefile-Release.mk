@@ -17,19 +17,21 @@ RANLIB=ranlib
 CC=gcc
 CCC=g++
 CXX=g++
-FC=
+FC=gfortran
 AS=as
 
 # Macros
 CND_PLATFORM=GNU-MacOSX
+CND_DLIB_EXT=dylib
 CND_CONF=Release
 CND_DISTDIR=dist
+CND_BUILDDIR=build
 
 # Include project Makefile
 include Makefile
 
 # Object Directory
-OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
+OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
@@ -53,8 +55,8 @@ OBJECTFILES= \
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=`/usr/local/bin/wx-config --cppflags` 
-CXXFLAGS=`/usr/local/bin/wx-config --cppflags` 
+CCFLAGS=`/opt/local/bin/wx-config --cppflags` 
+CXXFLAGS=`/opt/local/bin/wx-config --cppflags` 
 
 # Fortran Compiler Flags
 FFLAGS=
@@ -63,93 +65,93 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=/usr/local/lib/libjpeg.a `/usr/local/bin/curl-config --static-libs` `/usr/local/bin/wx-config --libs --gl-libs` -framework OpenGL -framework ApplicationServices  
+LDLIBSOPTIONS=/opt/local/lib/libjpeg.a `/opt/local/bin/curl-config --static-libs` `/opt/local/bin/wx-config --libs --gl-libs` -framework OpenGL -framework ApplicationServices  
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-Release.mk dist/Release/GNU-MacOSX/mac
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/mac
 
-dist/Release/GNU-MacOSX/mac: ${OBJECTFILES}
-	${MKDIR} -p dist/Release/GNU-MacOSX
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/mac: ${OBJECTFILES}
+	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/mac -Wl,-S ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
 ${OBJECTDIR}/_ext/1360937237/Settings.o: ../src/Settings.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Settings.o ../src/Settings.cpp
+	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/opt/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Settings.o ../src/Settings.cpp
 
 ${OBJECTDIR}/_ext/1360937237/MainFrame.o: ../src/MainFrame.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/MainFrame.o ../src/MainFrame.cpp
+	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/opt/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/MainFrame.o ../src/MainFrame.cpp
 
 ${OBJECTDIR}/_ext/1360937237/Application.o: ../src/Application.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Application.o ../src/Application.cpp
+	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/opt/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Application.o ../src/Application.cpp
 
 ${OBJECTDIR}/_ext/1360937237/GLCanvas.o: ../src/GLCanvas.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/GLCanvas.o ../src/GLCanvas.cpp
+	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/opt/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/GLCanvas.o ../src/GLCanvas.cpp
 
 ${OBJECTDIR}/_ext/1360937237/Player.o: ../src/Player.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Player.o ../src/Player.cpp
+	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/opt/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Player.o ../src/Player.cpp
 
 ${OBJECTDIR}/_ext/1360937237/download.o: ../src/download.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/download.o ../src/download.cpp
+	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/opt/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/download.o ../src/download.cpp
 
 ${OBJECTDIR}/_ext/1360937237/Utm.o: ../src/Utm.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Utm.o ../src/Utm.cpp
+	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/opt/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Utm.o ../src/Utm.cpp
 
 ${OBJECTDIR}/_ext/1360937237/statustext.o: ../src/statustext.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/statustext.o ../src/statustext.cpp
+	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/opt/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/statustext.o ../src/statustext.cpp
 
 ${OBJECTDIR}/_ext/1360937237/PreferencesDialog.o: ../src/PreferencesDialog.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/PreferencesDialog.o ../src/PreferencesDialog.cpp
+	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/opt/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/PreferencesDialog.o ../src/PreferencesDialog.cpp
 
 ${OBJECTDIR}/_ext/1360937237/base64.o: ../src/base64.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/base64.o ../src/base64.cpp
+	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/opt/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/base64.o ../src/base64.cpp
 
 ${OBJECTDIR}/_ext/1360937237/Panorama.o: ../src/Panorama.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Panorama.o ../src/Panorama.cpp
+	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/opt/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Panorama.o ../src/Panorama.cpp
 
 ${OBJECTDIR}/_ext/1360937237/Explorer.o: ../src/Explorer.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Explorer.o ../src/Explorer.cpp
+	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/opt/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/Explorer.o ../src/Explorer.cpp
 
 ${OBJECTDIR}/_ext/1360937237/common.o: ../src/common.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/common.o ../src/common.cpp
+	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/opt/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/common.o ../src/common.cpp
 
 ${OBJECTDIR}/_ext/1360937237/EditLocationsDialog.o: ../src/EditLocationsDialog.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1360937237
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/usr/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/EditLocationsDialog.o ../src/EditLocationsDialog.cpp
+	$(COMPILE.cc) -O3 -Wall -s -DCURL_STATICLIB -I/opt/local/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360937237/EditLocationsDialog.o ../src/EditLocationsDialog.cpp
 
 # Subprojects
 .build-subprojects:
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
-	${RM} -r build/Release
-	${RM} dist/Release/GNU-MacOSX/mac
+	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
+	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/mac
 
 # Subprojects
 .clean-subprojects:

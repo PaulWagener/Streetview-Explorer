@@ -183,7 +183,17 @@ void MainFrame::OnSelectLocation(wxCommandEvent &) {
         return;
 
     struct pano_location l = settings.locations[selection - 1];
-    this->StartWithPanorama(l.pano_id);
+
+    /**
+     * I have no idea why I need this sleep, but without it some mysterious race condition
+     * inside WxWidgets on the mac will pop up and crash the entire program.
+     * All I know is that it has something to do with WxMouseEvents
+     * If this is fixed in future versions of WxWidgets,
+     * then please delete this code AS SOON AS POSSIBLE!
+     */
+    wxThread::Sleep(100);
+
+    StartWithPanorama(l.pano_id);
 }
 
 /**

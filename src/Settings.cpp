@@ -32,9 +32,9 @@ Settings::Settings() {
         fclose(f);
     } else {
         //Default locations
-        struct pano_location london = {"zyqr7tEQSPQdsXHDy2V51Q", "Trafalgar Square, London"};
-        struct pano_location dedam = {"8iF3P8ZJ6HHUELqglMWeEg", "De Dam, Amsterdam"};
-        struct pano_location timessquare = {"BXihG0Q9zNPB9r-lkG-NVg", "Times square, New York"};
+        struct pano_location london = {"xV1nfyu-z7YjZgIlZRf5yQ", "Trafalgar Square, London"};
+        struct pano_location dedam = {"1L8m2_0QLop4mDwLv2Wj3A", "De Dam, Amsterdam"};
+        struct pano_location timessquare = {"_fcLSv1XeB5oCE47Esaing", "Times square, New York"};
         struct pano_location louvre = {"FP_aTaS5WoDk8AhmDfir_w", "The Louvre, Paris"};
         struct pano_location lasvegas = {"7zwIO7_PuEatkrBXhsn8BQ", "The Strip, Las Vegas"};
         locations.push_back(london);

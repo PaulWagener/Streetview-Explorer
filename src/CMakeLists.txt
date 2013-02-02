@@ -10,7 +10,7 @@ endif(WIN32)
 
 file(GLOB Sources *.cpp)
 
-add_executable(streetview ${Sources})
+add_executable(streetview MACOSX_BUNDLE ${Sources})
 
 find_package(wxWidgets REQUIRED html adv core base net aui xrc qa richtext gl)
 find_package(jpeg REQUIRED)
@@ -20,3 +20,11 @@ find_package(zlib REQUIRED)
 include(${wxWidgets_USE_FILE})
 include_directories(${JPEG_INCLUDE_DIR} ${CURL_INCLUDE_DIR} ${ZLIB_INCLUDE_DIR})
 target_link_libraries(streetview ${JPEG_LIBRARY} ${CURL_LIBRARY} ${ZLIB_LIBRARY} ${wxWidgets_LIBRARIES})
+
+set_target_properties(streetview PROPERTIES
+    MACOSX_BUNDLE_ICON_FILE ../streetview-explorer.icns
+    MACOSX_BUNDLE_BUNDLE_NAME "Streetview Explorer"
+    MACOSX_BUNDLE_LONG_VERSION_STRING "1.0"
+    MACOSX_BUNDLE_INFO_STRING "Streetview Explorer 1.0"
+    MACOSX_BUNDLE_GUI_IDENTIFIER "org.opensource.streetview-explorer"
+    MACOSX_BUNDLE_COPYRIGHT "Paul Wagener")

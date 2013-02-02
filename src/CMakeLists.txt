@@ -1,11 +1,18 @@
 cmake_minimum_required (VERSION 2.6) 
 project (Streetview)
 
-FILE(GLOB Sources *.cpp)
+#Prefer static libs
+if(WIN32)
+    set(CMAKE_FIND_LIBRARY_SUFFIXES .lib .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
+else(WIN32)
+    set(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
+endif(WIN32)
 
-ADD_EXECUTABLE(streetview ${Sources})
+file(GLOB Sources *.cpp)
 
-FIND_PACKAGE(wxWidgets REQUIRED html adv core base net aui xrc qa richtext gl)
+add_executable(streetview ${Sources})
+
+find_package(wxWidgets REQUIRED html adv core base net aui xrc qa richtext gl)
 find_package(jpeg REQUIRED)
 find_package(curl REQUIRED)
 find_package(zlib REQUIRED)

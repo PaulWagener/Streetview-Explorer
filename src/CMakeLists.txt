@@ -9,10 +9,10 @@ FILE(GLOB Sources *.cpp)
 ADD_EXECUTABLE(streetview ${Sources})
 
 FIND_PACKAGE(wxWidgets REQUIRED html adv core base net aui xrc qa richtext gl)
-INCLUDE(${wxWidgets_USE_FILE})
-TARGET_LINK_LIBRARIES(streetview ${wxWidgets_LIBRARIES}) 
+find_package(jpeg REQUIRED)
+find_package(curl REQUIRED)
+find_package(zlib REQUIRED)
 
-#find_package(Jpeg)
-include_directories(/opt/local/include)
-
-TARGET_LINK_LIBRARIES(streetview jpeg z curl)
+include(${wxWidgets_USE_FILE})
+include_directories(${JPEG_INCLUDE_DIR} ${CURL_INCLUDE_DIR} ${ZLIB_INCLUDE_DIR})
+target_link_libraries(streetview ${wxWidgets_LIBRARIES} ${JPEG_LIBRARY} ${CURL_LIBRARY} ${ZLIB_LIBRARY})

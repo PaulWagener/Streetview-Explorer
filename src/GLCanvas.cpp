@@ -74,12 +74,20 @@ void GLCanvas::OnMouseMotion(wxMouseEvent& event) {
 
     explorer.player.moveMouse(event.m_x - trap_x, event.m_y - trap_y);
 
+    ignoreMouseEvents = true;
 #ifdef __WXMAC__
-    CGSetLocalEventsSuppressionInterval(0.0);
+    CGEventSourceRef evsrc = CGEventSourceCreate(kCGEventSourceStateCombinedSessionState);
+    CGEventSourceSetLocalEventsSuppressionInterval(evsrc, 0.0);
+    CGAssociateMouseAndMouseCursorPosition (0);
 #endif
 
-    ignoreMouseEvents = true;
     WarpPointer(trap_x, trap_y);
+
+#ifdef __WXMAC__
+    CGAssociateMouseAndMouseCursorPosition (1);
+    CFRelease(evsrc);
+#endif
+
     ignoreMouseEvents = false;
 }
 

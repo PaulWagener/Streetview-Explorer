@@ -1,8 +1,0 @@
-#!/bin/sh
-rm -rf /StreetView\ Explorer.dmg
-rm -rf /StreetView\ Explorer.app/Contents/MacOS/streetview-explorer
-
-cp dist/Release/GNU-MacOSX/mac StreetView\ Explorer.app/Contents/MacOS/streetview-explorer
-
-./buildDMG.pl -compressionLevel 9 StreetView\ Explorer.app
-
